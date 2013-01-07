@@ -1,0 +1,135 @@
+\name{rlme}
+\alias{rlme}
+\title{
+Mixed-Effects Nested Models Rank-based Estimates
+}
+\description{
+This function estimates fixed effects and predicts random effects in two- and three-level random effects nested models using three rank-based fittings (GR, GEER, JR) and one prediction method (RPP).
+}
+\usage{
+rlme(f, data, method = "gr", print = FALSE, na.omit = TRUE, weight="wil", rprpair="hl-disp")
+}
+%- maybe also 'usage' for other objects documented here.
+\arguments{
+  \item{f}{
+  An object of class formula describing the mixed effects model. The syntax is same as in the lme4 package. Example: y ~ 1 + sex + age + (1 | school) + (1 | school:section) - sex and age are the fixed effects, school and section are the nested random effects, section is nested within school.
+}
+  \item{data}{
+  The dataframe to analyze.
+}
+  \item{method}{
+  string indicating the method to use (one of "gr", "jr", "reml", and "geer"). defaults to "gr".
+}
+  \item{print}{
+  Whether or not to print a summary of results. Defaults to false.  
+}
+  \item{na.omit}{
+  Whether or not to omit rows containing NA values. Defaults to true.
+}
+  \item{weight}{
+When weight="hbr", it uses hbr weights in GEE weights. By default, ="wil", it uses Wilcoxon weights. See the theory in the references. 
+}
+  \item{rprpair}{
+  By default, it uses "hl-disp" in the random prediction procedure (RPP). Also, "med-mad" would be an alternative.
+}
+
+}
+\value{
+The function returns a list of class "rlme". Use summary.rlme to see a summary of the fit.
+
+  \item{formula}{
+  The model formula.
+}
+  \item{method}{
+  The method used.
+}
+  \item{fixed.effects}{
+  Estimate of fixed effects.
+}
+  \item{random.effects}{
+  Estimate of random effects.
+}
+  \item{standard.residual}{
+  Residuals.
+}
+  \item{intra.class.correlations}{
+  Intra/inter-class correlationa estimates obtained from RPP.
+}
+  \item{t.value}{
+  t-values.
+}
+  \item{p.value}{
+  p-values.
+}
+  \item{location}{
+  Location.  
+}
+  \item{scale}{
+  Scale.  
+}
+  \item{y}{
+  The response variable y.  
+}
+  \item{num.obs}{
+  Number of observations in provided dataset.  
+}
+  \item{num.clusters}{
+  The number of clusters.
+}
+  \item{num.subclusters}{
+  The number of subclusters.
+}
+  \item{effect.err}{
+  Effect from error.
+}
+  \item{effect.cluster}{
+  Effect from cluster.
+}
+  \item{effect.subcluster}{
+  Effect from subcluster.
+}
+  \item{var.b}{
+  Variances of fixed effects estimate (Beta estimates).
+}
+  \item{xstar}{
+  Weighted design matrix with error covariance matrix.
+}
+  \item{ystar}{
+    Weighted response vector with its covariance matrix.
+
+}
+  \item{ehat}{
+  The raw residual. 
+}
+  \item{ehats}{
+    The raw residual after weighted step. Scaled residual.
+
+}
+}
+\references{
+Y. K. Bilgic. Rank-based estimation and prediction for mixed effects models in nested designs.
+2012. URL http://scholarworks.wmich.edu/dissertations/40. Dissertation.
+
+T. P. Hettmansperger and J. W. McKean. Robust Nonparametric Statistical Methods. Chapman Hall, 2012.
+}
+\author{
+  Yusuf Bilgic \email{yekabe@hotmail.com} and Herb Susmann \email{hps1@geneseo.edu}
+}
+\seealso{
+\code{\link{summary.rlme}}
+\code{\link{plot.rlme}}
+\code{\link{compare.fits}}
+}
+\examples{
+data(schools)
+
+rlme.fit = rlme(y ~ 1 + sex + age + (1 | school) + (1 | school:section), schools, method="gr")
+summary(rlme.fit)
+str(rlme.fit)
+
+#Try method="geer", "reml", "ml" and "jr" along with rprpair="hl-disp" and "med-mad"
+#weight="hbr" is for the gee method.
+}
+% Add one or more standard keywords, see file 'KEYWORDS' in the
+% R documentation directory.
+\keyword{ models }
