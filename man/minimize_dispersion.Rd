@@ -7,7 +7,7 @@ Minimize Dispersion Function
 Uses optim to find regression estimates which minimize dispersion function on X and Y input matrices
 }
 \usage{
-minimize_dispersion(X, Y, method = "BFGS", init.guess = "quantreg",
+minimize_dispersion(X, Y, method = "BFGS", init.guess = "quantreg", 
 verbose = FALSE, se = TRUE)
 }
 \arguments{

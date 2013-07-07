@@ -33,7 +33,7 @@ Maintainer: Yusuf Bilgic \email{bilgic@geneseo.edu} or \email{yusuf.k.bilgic@gma
 
 library(rlme)
 data(schools)
-rlme.fit = rlme(y ~ 1 + sex + age + (1 | region) + (1 | region:school), schools)
+formula = y ~ 1 + sex + age + (1 | region) + (1 | region:school)
+rlme.fit = rlme(formula, schools)
 summary(rlme.fit)
-
 }

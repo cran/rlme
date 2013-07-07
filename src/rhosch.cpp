@@ -114,15 +114,6 @@ List rhoschC(NumericVector ahat, NumericVector section_counts, NumericMatrix stu
     
     index_j += student_counts(i, num_sections - 1);
     
-    /*
-    std::cout << "rho 1 school " << i << " = " << rho[0] << std::endl;
-    std::cout << "rho 2 school " << i << " = " << rho[1] << std::endl;
-    std::cout << "rho 3 school " << i << " = " << rho[2] << std::endl;
-    std::cout << "rho 4 school " << i << " = " << rho[3] << std::endl;
-    
-    std::cout << std::endl;
-    */
-    
     index_i += school_student_counts[i];
   }
   

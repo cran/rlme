@@ -8,7 +8,7 @@ NumericMatrix pairup(NumericVector vec, String type = "less") {
   int index = 0;
   
   if(type == "leq") {
-    NumericMatrix m((pow(n, 2) + n) / 2.0, 2);
+    NumericMatrix m((pow((double)n, 2.0) + n) / 2.0, 2);
     
     for(int i = 0; i < n; i++) {
       for(int j = i; j < n; j++) {
@@ -22,7 +22,7 @@ NumericMatrix pairup(NumericVector vec, String type = "less") {
     return(m);
   }
   else if(type == "neq") {
-    NumericMatrix m(pow(n, 2), 2);
+    NumericMatrix m(pow((double)n, 2.0), 2);
     
     for(int i = 0; i < n; i++) {
       for(int j = 0; j < n; j++) {

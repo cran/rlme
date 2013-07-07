@@ -40,7 +40,8 @@ beta_var(x, school, tauhat, v1, v2, v3, section, mat)
 %%     ~~Describe \code{v3} here~~
 }
   \item{mat}{
-  A matrix of numbers of observations in subclusters. Dimension is Ixmax(number ofsubclusters). Each row indicates one cluster. 
+  A matrix of numbers of observations in subclusters. 
+  Dimension is Ixmax(number ofsubclusters). Each row indicates one cluster. 
 %%     ~~Describe \code{mat} here~~
 }
 }

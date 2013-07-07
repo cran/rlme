@@ -25,7 +25,8 @@ wilstep(I, sec, mat, init = F, y, x, sigmaa2 = 1,
 %%     ~~Describe \code{sec} here~~
 }
   \item{mat}{
-   A matrix of numbers of observations in subclusters. Dimension is Ixmax(number ofsubclusters). Each row indicates one cluster. 
+   A matrix of numbers of observations in subclusters.
+   Dimension is Ixmax(number ofsubclusters). Each row indicates one cluster. 
 %%     ~~Describe \code{mat} here~~
 }
   \item{init}{

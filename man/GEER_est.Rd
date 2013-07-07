@@ -30,7 +30,8 @@ GEER_est(x, y, I, sec, mat, school, section, weight, rprpair, verbose=FALSE)
 %%     ~~Describe \code{sec} here~~
 }
   \item{mat}{
-  A matrix of numbers of observations in subclusters. Dimension is Ixmax(number ofsubclusters). Each row indicates one cluster. 
+  A matrix of numbers of observations in subclusters.
+  Dimension is Ixmax(number ofsubclusters). Each row indicates one cluster. 
 %%     ~~Describe \code{mat} here~~
 }
   \item{school}{
