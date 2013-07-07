@@ -1,5 +1,7 @@
 export(rlme)
 
+export(minimize_dispersion)
+export(lmr)
 export(GR_est)
 export(JR_est)
 export(GEER_est)
@@ -25,10 +27,13 @@ export(getlmestplot)
 export(summary.rlme)
 export(plot.rlme)
 
-
 importFrom("MASS", lmsreg, ltsreg, ginv, huber)
-importFrom("quantreg", rq.fit.br, rq.fit.fnb)
+importFrom("quantreg", rq.fit.br, rq.fit.fnb, rq)
 importFrom("nlme", lme, random.effects)
 importFrom("stringr", str_extract_all)
 importFrom("mgcv", extract.lme.cov2)
 importFrom("magic", adiag)
+importFrom("robustbase", covMcd)
+
+useDynLib("rlme")
+importFrom(Rcpp, cppFunction)

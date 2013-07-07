@@ -1,5 +1,5 @@
 beta_var <-
-function (x, school, tauhat, v1, v2, v3, section) 
+function (x, school, tauhat, v1, v2, v3, section, mat) 
 {
     x <- as.matrix(x)
     ublock <- unique(school)
@@ -9,7 +9,7 @@ function (x, school, tauhat, v1, v2, v3, section)
     for (i in 1:I) {
         x_i <- as.matrix(x[school == ublock[i], ])
         n_i <- nrow(x_i)
-        s_i <- Bmat_sch(v1, v2, v3, section[school == ublock[i]])
+        s_i <- bmat_schC(v1, v2, v3, mat[i,])
         sig2 <- sig2 + t(x_i) %*% s_i %*% x_i
     }
     xx_inv <- solve(crossprod(x))
@@ -37,22 +37,35 @@ function (v1, v2, v3, section)
         ind <- ind + nk
     }
     B[B == 0] <- v3
-    invisible(B)
+    B
 }
+
 file <-
 "rhoestimators.r"
 interc_se <-
-function (x, ehat, school, section, taus) 
+function (x, ehat, taus, sec, mat) 
 {
-    rho1 <- rhosect(sign(ehat), school, section)
-    c1 <- sum(sum((apply(rho1$rho2, 1, sum, na.rm = T)/apply(rho1$npair, 
-        1, sum)) * t(apply(rho1$mat, 1, sum))))/sum(sum(rho1$mat))
-    rho2 <- rhosch(sign(ehat), school, section)
+    #rho1 <- rhosect(sign(ehat), school, section)
+    
+    #c1 <- sum(sum((apply(rho1$rho2, 1, sum, na.rm = T)/apply(rho1$npair, 
+    #    1, sum)) * t(apply(rho1$mat, 1, sum))))/sum(sum(rho1$mat))
+    
+    rho1 <- rhosectC(sign(ehat), sec, mat)
+    
+    c1 <- sum(sum((apply(rho1$rho2, 1, sum, na.rm = T)/apply(choose(mat, 2), 
+      1, sum)) * t(apply(mat, 1, sum))))/sum(sum(mat))
+  
+    
+    #rho2 <- rhosch(sign(ehat), school, section)
+    
+    rho2 <- rhoschC(sign(ehat), sec, mat)
+    
     c2 <- sum(((rho2$rho2/rho2$npair) * rho2$nvec)/sum(rho2$nvec), 
         na.rm = T)
-    N <- sum(sum(rho1$mat))
+    
+    N <- sum(sum(mat))
     a <- N^2 - dim(x)[2]
-    var_alpha <- (taus^2/a) * (N + 2 * sum(sum(rho1$npair)) * 
+    var_alpha <- (taus^2/a) * (N + 2 * sum(sum(choose(mat, 2))) * 
         c1 + 2 * sum(rho2$npair) * c2)
     list(var_alpha = var_alpha)
 }
@@ -144,6 +157,7 @@ function (x, y)
     ans = cbind(as.numeric(c1), as.numeric(c2))
     list(ans = ans, n = n1 * n2)
 }
+
 rhosch <-
 function (ahat, school, section) 
 {
@@ -153,10 +167,14 @@ function (ahat, school, section)
     rho1_vec <- rho2_vec <- rho3_vec <- rho4_vec <- npair <- nvec
     for (i in 1:I) {
         vblock <- unique(section[school == ublock[i]])
+        
+        
         m <- choose(length(vblock), 2)
         nn <- 0
         rho1 <- rho2 <- rho3 <- rho4 <- 0
         a_i <- ahat[school == ublock[i]]
+        
+        
         for (j in 1:(length(vblock) - 1)) {
             for (k in (j + 1):length(vblock)) {
                 if (length(vblock) == 1) {
@@ -201,6 +219,7 @@ function (ahat, school, section)
     list(rho1 = rho1_vec, rho2 = rho2_vec, rho3 = rho3_vec, rho4 = rho4_vec, 
         nvec = nvec, npair = npair)
 }
+
 rhosect <-
 function (ahat, school, section) 
 {
@@ -216,7 +235,7 @@ function (ahat, school, section)
             a_ij <- a_i[section[school == ublock[i]] == vblock[j]]
             a_ij <- a_ij[!is.na(a_ij)]
             nvec[i, j] <- length(a_ij)
-            pair = as.matrix(pairup1(a_ij)$ans)
+            pair = pairup(a_ij)
             if (dim(pair)[2] == 1) {
                 rho1_vec[i, j] = 0
                 rho2_vec[i, j] = 0

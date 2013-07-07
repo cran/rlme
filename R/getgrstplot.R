@@ -30,7 +30,7 @@ function (rlme.fit)
     trim = 2
     par(mfrow = c(1, 2), font.main = 1)
     plot(standr.lme ~ yhat.lme, pch = "o", xlab = "Fit", ylab = "Standardized Residual", 
-        main = "Stand. Residuals vs. Fits in GR")
+        main = "Stand. Residuals vs. Fits in REML")
     abline(h = c(-trim, trim), col = "red")
     qqnorm(standr.lme, pch = "o", main = "Normal Q-Q Plot")
     qqline(standr.lme, col = "red")

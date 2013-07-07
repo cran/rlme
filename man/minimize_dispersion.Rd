@@ -1,0 +1,40 @@
+\name{minimize_dispersion}
+\alias{minimize_dispersion}
+\title{
+Minimize Dispersion Function
+}
+\description{
+Uses optim to find regression estimates which minimize dispersion function on X and Y input matrices
+}
+\usage{
+minimize_dispersion(X, Y, method = "BFGS", init.guess = "quantreg",
+verbose = FALSE, se = TRUE)
+}
+\arguments{
+  \item{X}{
+    Input matrix
+}
+  \item{Y}{
+    Response vector
+}
+  \item{method}{
+    Method optim should use - one of "Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "SANN", or "Brent".
+}
+  \item{init.guess}{
+  How to calculate the first regression estimate. Defaults to using quantile regression.
+}
+  \item{verbose}{
+    Whether to print out verbose messages.
+}
+  \item{se}{
+    Whether or not to calculate standard errors of regression estimates.
+}
+}
+
+\value{
+\item{theta }{Regression parameter estimates}
+\item{ehat }{Regression residuals}
+}
+\author{
+Herb Susmann
+}

@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Wilcoxon estimate for independent linear models}
 \description{
-This function gets weighted rank based fittings from the ww package. Rfit would be an alternative to get the rank-based linear model estimates.
+This function gets weighted rank based fittings.
 }
 \usage{
 wilonestep(y, x)

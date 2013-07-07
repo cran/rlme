@@ -9,7 +9,7 @@ The package rlme calls this function for gee method, one of the methods proposed
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-GEER_est(x, y, I, sec, mat, school, section, weight, rprpair)
+GEER_est(x, y, I, sec, mat, school, section, weight, rprpair, verbose=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -50,6 +50,9 @@ When weight="hbr", it uses hbr weights in GEE weights. By default, ="wil", it us
   \item{rprpair}{
   By default, it uses "hl-disp" in the random prediction procedure (RPP). Also, "med-mad" would be an alternative.
 %%     ~~Describe \code{section} here~~
+}
+  \item{verbose}{
+    Boolean indicating whether to print out diagnostic messages.
 }
 
 }

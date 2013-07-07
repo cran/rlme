@@ -1,5 +1,5 @@
 beta_var2 <-
-function (x, school, tauhat, v1, v2) 
+function (x, school, tauhat, v1, v2, sec) 
 {
     x <- as.matrix(x)
     ublock <- unique(school)
@@ -9,7 +9,8 @@ function (x, school, tauhat, v1, v2)
     for (i in 1:I) {
         x_i <- as.matrix(x[school == ublock[i], ])
         n_i <- nrow(x_i)
-        s_i <- Bmat2(v1, v2, school[school == ublock[i]])
+        #s_i <- Bmat2(v1, v2, school[school == ublock[i]])
+        s_i <- bmat2C(v1, v2, c(n_i))
         sig2 <- sig2 + s_i[1] * t(x_i) %*% x_i
     }
     xx_inv <- solve(crossprod(x))

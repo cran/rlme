@@ -369,7 +369,7 @@ function (x, center, cov, inverted = FALSE, tol.inv = 1e-17)
     names(retval) <- rownames(x)
     retval
 }
-pairup <-
+pairup.ww <-
 function (x, type = "less") 
 {
     x = as.matrix(x)
@@ -691,13 +691,13 @@ function (x, y, delta = 0.8, param = 2)
     wilcoxonpseudo = fitw + tau * zeta * sc
     wilcoxonpseudo
 }
-wilcoxontau <-
+wilcoxontau.ww <-
 function (resd, p, delta = if ((length(resd)/p) > 5) 0.8 else 0.95, 
     param = 2) 
 {
     eps <- 1e-06
     n <- length(resd)
-    temp <- pairup(resd)
+    temp <- pairup(resd, type="less")
     dresd <- sort(abs(temp[, 1] - temp[, 2]))
     dresd = dresd[(p + 1):choose(n, 2)]
     tdeltan <- quantile(dresd, delta)/sqrt(n)
@@ -711,6 +711,7 @@ function (resd, p, delta = if ((length(resd)/p) > 5) 0.8 else 0.95,
     dn = scores[n] - scores[1]
     wilcoxontau <- sqrt(n/(n - p - 1)) * ((2 * tdeltan)/(dn * 
         sum(w) * cn))
+    
     w <- rep(0, n)
     stan <- (resd - median(resd))/mad(resd)
     w[abs(stan) < param] <- 1
@@ -847,10 +848,10 @@ function (x, y, bij = wilwts(as.matrix(x)), center = F)
             x - mean(x)
         })
     }
-    ypairs = pairup(y)
+    ypairs = pairup.ww(y)
     yi = ypairs[, 1]
     yj = ypairs[, 2]
-    xpairs = pairup(x)
+    xpairs = pairup.ww(x)
     xi = xpairs[, 1:p]
     xj = xpairs[, (p + 1):(2 * p)]
     newy = bij * (yi - yj)

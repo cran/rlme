@@ -8,9 +8,15 @@ function (I, sec, mat, init = F, y, x, sigmaa2 = 1, sigmaw2 = 1,
     }
     n = length(y)
     if (init == T) {
-        fitw = wwest(x, y, print.tbl = F)
-        theta = fitw$tmp1$coef
-        ehat = fitw$tmp1$residuals
+        #fitw = wwest(x, y, print.tbl = F)
+        fit = minimize_dispersion(as.matrix(x), as.matrix(y))
+      
+        #theta = fitw$tmp1$coef
+        #ehat = fitw$tmp1$residuals
+        
+        theta = fit$theta
+        ehat = fit$ehat
+        
         fitvc = rprmeddis(I, sec, mat, ehat, location, scale, 
             rprpair = rprpair)
         sigmaa2 = fitvc$siga2
@@ -22,11 +28,20 @@ function (I, sec, mat, init = F, y, x, sigmaa2 = 1, sigmaw2 = 1,
     }
     else {
         sigmay = sigymake(I, sec, mat, sigmaa2, sigmaw2, sigmae2)
-        sigma12inv = matrix(sigmay$sigy12i, ncol = n)
+        sigma12inv = sigmay$sigy12i
         ystar = sigma12inv %*% y
         xstar = sigma12inv %*% cbind(rep(1, n), x)
-        fitw = wwest(xstar, ystar, print.tbl = F)
-        yhat = ystar - fitw$tmp1$residuals
+        
+        #fitw = wwest(xstar, ystar, print.tbl = F)
+        
+        fit = minimize_dispersion(as.matrix(xstar), as.matrix(ystar))
+        
+        # Subtract intercept from residuals
+        fit.residuals = fit$ehat - fit$theta[1]
+        
+        #yhat = ystar - fitw$tmp1$residuals
+        yhat = ystar - fit.residuals
+        
         fitcsp = projcsp(xstar, yhat)
         theta = fitcsp$betahat
         ehat = y - cbind(rep(1, n), x) %*% theta

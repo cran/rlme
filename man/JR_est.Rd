@@ -7,7 +7,7 @@ JR Method
 Fit a model using the JR method
 }
 \usage{
-JR_est(x, y, I, sec, mat, school, section, rprpair = 'hl-disp')
+JR_est(x, y, I, sec, mat, school, section, rprpair = 'hl-disp', verbose=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -43,6 +43,9 @@ JR_est(x, y, I, sec, mat, school, section, rprpair = 'hl-disp')
   \item{rprpair}{
   By default, it uses "hl-disp" in the random prediction procedure (RPP). Also, "med-mad" would be an alternative.
 %%     ~~Describe \code{section} here~~
+}
+  \item{verbose}{
+    Boolean indicating whether to print out diagnostic messages.
 }
 
 }

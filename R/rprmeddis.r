@@ -1,16 +1,16 @@
-rpr <-
-function (ehat, school, section, rprpair = "hl-disp") 
-{
-    I = length(unique(factor(section)))
-    sec = as.vector(sec_vec(school, section))
-    mat = mat_vec(school, section)
-    rprpair = tolower(rprpair)
-    location = scale = 2
-    if (rprpair == "med-mad") {
-        location = scale = 1
-    }
-    return(rprmeddis(I, sec, mat, ehat, location, scale))
-}
+#rpr <-
+#function (ehat, school, section, rprpair = "hl-disp") 
+#{
+#    I = length(unique(factor(section)))
+#    sec = as.vector(sec_vec(school, section))
+#    mat = mat_vec(school, section)
+#    rprpair = tolower(rprpair)
+#    location = scale = 2
+#    if (rprpair == "med-mad") {
+#        location = scale = 1
+#    }
+#    return(rprmeddis(I, sec, mat, ehat, location, scale))
+#}
 
 rprmeddis <-
 function (I, sec, mat, ehat, location, scale, rprpair = "hl-disp") 

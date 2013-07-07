@@ -5,7 +5,7 @@
 Wilcoxon One Step Rank-based Estimate in GR Method
 }
 \description{
-Gets weighted rank based fittings using the ww package. The Rfit package would be used as an alternative. Also, see the wilstep2 function in R codes for two-level nested designs.
+Gets weighted rank based fittings for nested designs.
 }
 \usage{
 wilstep(I, sec, mat, init = F, y, x, sigmaa2 = 1,

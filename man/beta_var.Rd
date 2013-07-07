@@ -8,7 +8,7 @@
   Fixed effect variance estimation for Joint Rank Method (JR). It assumes Compound Symmetric (CS) structure of error terms. For k-level design, there are k-1 intra/inter-class parameters to place in a correlation matrix of errors. 
 }
 \usage{
-beta_var(x, school, tauhat, v1, v2, v3, section)
+beta_var(x, school, tauhat, v1, v2, v3, section, mat)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -38,6 +38,10 @@ beta_var(x, school, tauhat, v1, v2, v3, section)
   \item{section}{
     A vector of subclusters, nx1.
 %%     ~~Describe \code{v3} here~~
+}
+  \item{mat}{
+  A matrix of numbers of observations in subclusters. Dimension is Ixmax(number ofsubclusters). Each row indicates one cluster. 
+%%     ~~Describe \code{mat} here~~
 }
 }
 \details{

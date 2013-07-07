@@ -27,7 +27,9 @@ function (x, test = T, alt = 0, theta0 = 0, alpha = 0.05, maktable = T,
             }
         }
     }
-    xpairs = pairup(x, type = "leq")
+    #xpairs = pairupC(x, "leq")
+    xpairs = pairup(x, type="leq")
+    
     was = (xpairs[, 1] + xpairs[, 2])/2
     est = median(was)
     was = sort(was)

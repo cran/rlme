@@ -5,11 +5,13 @@ Rank-based Estimates for Mixed-Effects Nested Models
 }
 \description{
 This function estimates fixed effects and predicts random effects in two- and three-level random effects nested models using three rank-based fittings (GR, GEER, JR) via the prediction method algorithm RPP.
+
+The iterative methods GR and GEER can be quite slow for large datasets; try JR for faster analysis. If you want to use the GR method, try using rprpair='med-mad'. This method avoids building a NxN covariance matrix which can quickly become unwieldly with large data.
 }
 \usage{
 rlme(f, data, method = "gr", print = FALSE,
      na.omit = TRUE, weight="wil",
-     rprpair="hl-disp")
+     rprpair="hl-disp", verbose=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -17,7 +19,7 @@ rlme(f, data, method = "gr", print = FALSE,
   An object of class formula describing the mixed effects model. The syntax is same as in the lme4 package. Example: y ~ 1 + sex + age + (1 | region) + (1 | region:school) - sex and age are the fixed effects, region and school are the nested random effects, school is nested within region.
 }
   \item{data}{
-  The dataframe to analyze.
+  The dataframe to analyze. Data should be cleaned prior to analysis: cluster and subcluster columns are expected to be integers and in order (e.g. all clusters and subclusters )
 }
   \item{method}{
   string indicating the method to use (one of "gr", "jr", "reml", and "geer"). defaults to "gr".
@@ -34,7 +36,9 @@ When weight="hbr", it uses hbr weights in GEE weights. By default, ="wil", it us
   \item{rprpair}{
   By default, it uses "hl-disp" in the random prediction procedure (RPP). Also, "med-mad" would be an alternative.
 }
-
+  \item{verbose}{
+    Boolean indicating whether to print out diagnostic messages.
+}
 }
 \value{
 The function returns a list of class "rlme". Use summary.rlme to see a summary of the fit.
@@ -105,7 +109,6 @@ The function returns a list of class "rlme". Use summary.rlme to see a summary o
 }
   \item{ehats}{
     The raw residual after weighted step. Scaled residual.
-
 }
 }
 \references{

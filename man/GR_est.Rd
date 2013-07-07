@@ -8,7 +8,7 @@
 Fits a model using the GR method
 }
 \usage{
-GR_est(x, y, I, sec, mat, school, section, rprpair = 'hl-disp')
+GR_est(x, y, I, sec, mat, school, section, rprpair = 'hl-disp', verbose=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -45,6 +45,9 @@ GR_est(x, y, I, sec, mat, school, section, rprpair = 'hl-disp')
   By default, it uses "hl-disp" in the random prediction procedure (RPP). Also, "med-mad" would be an alternative.
 %%     ~~Describe \code{section} here~~
 }
+  \item{verbose}{
+    Boolean indicating whether to print out messages from the algorithm.
+}
 }
 \value{
 
@@ -61,7 +64,7 @@ GR_est(x, y, I, sec, mat, school, section, rprpair = 'hl-disp')
     Raw error.
 }
   \item{ehats}{
-    Independence error from last weighted step.  
+    Independence error from last weighted step. 
 }
   \item{effect_sch}{
     Cluster random error.

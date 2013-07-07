@@ -12,11 +12,13 @@ function (x, ...)
     else {
         cat("rlme only supports plotting fits from GR and REML methods\n")
     }
+    
+    invisible()
 }
 
 rlme <-
 function (f, data, method = "gr", print = FALSE, na.omit = TRUE, 
-    weight = "wil", rprpair = "hl-disp") 
+    weight = "wil", rprpair = "hl-disp", verbose=FALSE) 
 {
     method = tolower(method)
     fit = list(formula = f, location = location, scale = scale)
@@ -39,11 +41,17 @@ function (f, data, method = "gr", print = FALSE, na.omit = TRUE,
             1)
         I = length(unique(factor(data[[school_name]])))
         sec = as.vector(sec_vec(data[[school_name]], data[[section_name]]))
-        ss = rhosch(data[[school_name]], data[[school_name]], 
-            data[[section_name]])$nvec
+        
+        #ss = rhosch(data[[school_name]], data[[school_name]], 
+        #    data[[section_name]])$nvec
+        
+        
         fit$num.clusters = I
         fit$num.subclusters = sum(sec)
         mat = mat_vec(data[[school_name]], data[[section_name]])
+        
+        ss = rowSums(mat)
+        
         J = sum(sec)
         n = sum(mat)
         one = rep(1, length(data[[response_name]]))
@@ -71,10 +79,10 @@ function (f, data, method = "gr", print = FALSE, na.omit = TRUE,
     fit$y = y
     if (length(random_terms) == 0) {
         cat("You have entered an independent linear model.\n")
-        cat("The packages Rfit or ww can be used to fit such models.\n")
-        cat("Continuing using ww package.\n")
-        fitw = wwest(x, y, print.tbl = T)
-        return()
+        cat("The function 'lmr' can be used to fit these models.\n")
+        cat("Continuing using lmr.\n")
+        fitw = lmr(f, data=data)
+        return(fitw)
     }
     if (method == "reml" || method == "ml") {
         if (levels == 3) {
@@ -111,11 +119,11 @@ function (f, data, method = "gr", print = FALSE, na.omit = TRUE,
     else if (method == "jr") {
         if (levels == 3) {
             JR = JR_est(x, y, I, sec, mat, data[[school_name]], 
-                data[[section_name]], rprpair = rprpair)
+                data[[section_name]], rprpair = rprpair, verbose=verbose)
         }
         else if (levels == 2) {
             JR = JR_est2(x, y, I, 1, mat, data[[school_name]], 
-                rep(1, length(data[[school_name]])), rprpair = rprpair)
+                rep(1, length(data[[school_name]])), rprpair = rprpair, verbose=verbose)
         }
         JRb = JR$theta
         JRe = JR$ses
@@ -148,12 +156,12 @@ function (f, data, method = "gr", print = FALSE, na.omit = TRUE,
     else if (method == "gr") {
         if (levels == 3) {
             GR = GR_est(x, y, I, sec, mat, data[[school_name]], 
-                data[[section_name]], rprpair = rprpair)
+                data[[section_name]], rprpair = rprpair, verbose=verbose)
         }
         else if (levels == 2) {
             GR = GR_est2(x, y, I, rep(1, length(data[[school_name]])), 
                 mat, data[[school_name]], rep(1, length(data[[school_name]])), 
-                rprpair = rprpair)
+                rprpair = rprpair, verbose=verbose)
         }
         GRb = GR$theta
         GRe = GR$ses
@@ -162,13 +170,6 @@ function (f, data, method = "gr", print = FALSE, na.omit = TRUE,
         varb = GR$varb
         GRs = GR$sigma
         intracoeffs = c(GRs[1]/sum(GRs), (GRs[1] + GRs[2])/sum(GRs))
-        GR$ehat
-        GR$ehats
-        GR$effect_err
-        GR$effect_sch
-        GR$effect_sec
-        GR$xstar
-        GR$ystar
         coll.stres <- stanresidgr(GR$xstar, GR$ystar, resid = GR$ehats, 
             delta = 0.8, param = 2, conf = 0.95)
         stresgr <- coll.stres$stanr
@@ -183,8 +184,8 @@ function (f, data, method = "gr", print = FALSE, na.omit = TRUE,
         fit$effect.err = GR$effect_err
         fit$effect.cluster = GR$effect_sch
         if (levels == 3) {
-            fit$random.effects = data.frame(Groups = c(paste(school_name, 
-                ":", section_name, sep = ""), school_name, "Residual"), 
+            fit$random.effects = data.frame(Groups = c(school_name, paste(school_name, 
+                ":", section_name, sep = ""), "Residual"), 
                 Name = c("(Intercept)", "(Intercept)", ""), Variance = GRs)
             fit$effect.subcluster = GR$effect_sec
         }
@@ -202,12 +203,12 @@ function (f, data, method = "gr", print = FALSE, na.omit = TRUE,
         tol = tol = 1.1e-25
         if (levels == 3) {
             GEER = GEER_est(x, y, I, sec, mat, data[[school_name]], 
-                data[[section_name]], weight = weight, rprpair = rprpair)
+                data[[section_name]], weight = weight, rprpair = rprpair, verbose=verbose)
         }
         else if (levels == 2) {
             GEER = GEER_est2(x, y, I, rep(1, length(data[[school_name]])), 
                 mat, data[[school_name]], rep(1, length(data[[school_name]])), 
-                weight = weight, rprpair = rprpair)
+                weight = weight, rprpair = rprpair, verbose=verbose)
         }
         GEERb = GEER$theta
         GEERs = GEER$sigma
@@ -224,8 +225,8 @@ function (f, data, method = "gr", print = FALSE, na.omit = TRUE,
         fit$effect.err = GEER$effect_err
         fit$effect.cluster = GEER$effect_sch
         if (levels == 3) {
-            fit$random.effects = data.frame(Groups = c(paste(school_name, 
-                ":", section_name, sep = ""), school_name, "Residual"), 
+            fit$random.effects = data.frame(Groups = c(school_name, paste(school_name, 
+                ":", section_name, sep = ""), "Residual"), 
                 Name = c("(Intercept)", "(Intercept)", ""), Variance = GEERs)
             fit$effect.subcluster = GEER$effect_sec
         }
@@ -246,18 +247,21 @@ function (f, data, method = "gr", print = FALSE, na.omit = TRUE,
 }
 scale <-
 2
+
 summary.rlme <-
 function (object, ...) 
 {
     fit = object
     cat("Linear mixed model fit by ", fit$method, "\n")
     cat("Formula: ", deparse(fit$formula), "\n")
+    
     if ("random.effects" %in% attributes(fit)$names) {
         cat("Random effects:\n")
         random.effects = fit$random.effects
         names(random.effects) = c("Groups", "Name", "Variance")
         print(random.effects, row.names = FALSE, right = FALSE)
     }
+    
     cat("\nNumber of obs:\n")
     cat(fit$num.obs)
     if ("num.clusters" %in% attributes(fit)$names && "num.subclusters" %in% 
@@ -268,8 +272,16 @@ function (object, ...)
     cat("\n")
     cat("\nFixed effects:\n")
     fixed.effects = fit$fixed.effects
-    names(fixed.effects) = c("", "Estimate", "Std. Error", "t value", 
-        "p value")
+    
+    if(length(fixed.effects) == 5) {
+      names(fixed.effects) = c("", "Estimate", "Std. Error", "t value", 
+          "p value")
+    } else if(length(fixed.effects) == 3) {
+      names(fixed.effects) = c("", "Estimate", "Std. Error")
+    } else if(length(fixed.effects) == 2) {
+      names(fixed.effects) = c("", "Estimate")
+    }
+    
     print(fixed.effects, row.names = FALSE, right = FALSE)
     if ("intra.class.correlations" %in% attributes(fit)$names) {
         cat("\nIntra-class correlation coefficients\n")
@@ -278,8 +290,11 @@ function (object, ...)
         names(intra.coeffs) = c("", "Esimates")
         print(intra.coeffs, row.names = FALSE, right = FALSE)
     }
-    cat("\ncov-var (fixed effects)\n")
-    print(fit$var.b)
+    
+    if(!is.null(fit$var.b)) {
+      cat("\ncov-var (fixed effects)\n")
+      print(fit$var.b)
+    }
 }
 tol <-
 1e-23

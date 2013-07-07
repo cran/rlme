@@ -2,32 +2,37 @@
 \alias{rpr}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Frontend to rprmeddis
+Cluster and Subcluster effects
 }
 \description{
-Used as a simple wrapper for rprmeddis
+Partitions model residuals into cluster and subcluster effects using RPP algorithm.
 }
 \usage{
-rpr(ehat, school, section, rprpair = "hl-disp")
+rpr(f, resd, data, rprpair='hl-disp')
 }
 \arguments{
-  \item{ehat}{
-    The raw residual. 
-
-%%     ~~Describe \code{ehat} here~~
+  \item{f}{
+    A model formula which specifices the random effects (see example)
 }
-  \item{school}{
-    The number of clusters.
-
-%%     ~~Describe \code{school} here~~
+  \item{resd}{
+    The residuals from the fitted model
 }
-  \item{section}{
-    The number of subclusters.
-
-%%     ~~Describe \code{section} here~~
+  \item{data}{
+    The data the model was fitted on
 }
   \item{rprpair}{
 Character string indicating the location and scale parameters to use. Default to "hl-disp", but may also be "med-mad". See Bilgic (2012). 
+}
+}
+\value{
+  \item{siga2}{
+    Variance from cluster
+}
+  \item{sigw2}{
+    Variance from subcluster
+}
+  \item{sigmae2}{
+    Remaining variance not accounted for by variance of cluster and subcluster
 }
 }
 \references{
@@ -40,3 +45,20 @@ J. W. McKean and Y. K. Bilgic
 \code{\link{rprmeddis}}
 \code{\link{dispvar}}
 }
+\examples{
+# Load school data
+data(schools)
+
+# Fit fixed effects model with lmr
+lmr.fit = lmr(y ~ age + sex, data=schools)
+
+# Three level design
+# Partition residuals into school and region effects with rpp algorithm
+rpr(y ~ age + sex + (1 | school) + (1 | school:region), lmr.fit$ehat, schools)
+
+# Two level design
+# Estimate variance in residuals from school
+rpr(y ~ age + sex + (1 | school), lmr.fit$ehat, schools)
+}
+
+

@@ -11,8 +11,7 @@ Calculates hbr weights for the GEER method. This turns a vector of weights for a
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-hbrwts_gr(xmat, y, robdis2 = mycov.rob(as.matrix(xmat), method = "mcd")$robdis2,
-          percent = 0.95, intest = myltsreg(xmat, y)$coef)
+hbrwts_gr(xmat, y, percent = 0.95, intest = ltsreg(xmat, y)$coef)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -23,10 +22,6 @@ hbrwts_gr(xmat, y, robdis2 = mycov.rob(as.matrix(xmat), method = "mcd")$robdis2,
   \item{y}{
  Response vector in nx1.
 %%     ~~Describe \code{y} here~~
-}
-  \item{robdis2}{
- This is obtained from mycov.rob(as.matrix(xmat, method = "mcd")$robdis2
-%%     ~~Describe \code{robdis2} here~~
 }
   \item{percent}{
  This is 0.95.

@@ -2,10 +2,10 @@
 \alias{dispvar}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Rank-based dispersion estimate. This is unbiased estimator with a correction factor for standard deviation when normal errors.
+Rank-based dispersion estimate.
 }
 \description{
-Estimates the dispersion of the given vector.
+This is an unbiased estimator with a correction factor for standard deviation when normal errors.
 }
 \usage{
 dispvar(x, score = 1)
