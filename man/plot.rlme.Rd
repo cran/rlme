@@ -21,6 +21,6 @@ Generates Normal Q-Q plot of residuals from rlme fit
 }
 \examples{
 data(schools)
-rlme.fit = rlme(y ~ 1 + sex + age + (1 | school) + (1 | school:section), schools, method="gr")
+rlme.fit = rlme(y ~ 1 + sex + age + (1 | region) + (1 | region:school), schools, method="gr")
 plot(rlme.fit)
 }

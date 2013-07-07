@@ -1,18 +1,20 @@
 \name{rlme}
 \alias{rlme}
 \title{
-Mixed-Effects Nested Models Rank-based Estimates
+Rank-based Estimates for Mixed-Effects Nested Models
 }
 \description{
-This function estimates fixed effects and predicts random effects in two- and three-level random effects nested models using three rank-based fittings (GR, GEER, JR) and one prediction method (RPP).
+This function estimates fixed effects and predicts random effects in two- and three-level random effects nested models using three rank-based fittings (GR, GEER, JR) via the prediction method algorithm RPP.
 }
 \usage{
-rlme(f, data, method = "gr", print = FALSE, na.omit = TRUE, weight="wil", rprpair="hl-disp")
+rlme(f, data, method = "gr", print = FALSE,
+     na.omit = TRUE, weight="wil",
+     rprpair="hl-disp")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{f}{
-  An object of class formula describing the mixed effects model. The syntax is same as in the lme4 package. Example: y ~ 1 + sex + age + (1 | school) + (1 | school:section) - sex and age are the fixed effects, school and section are the nested random effects, section is nested within school.
+  An object of class formula describing the mixed effects model. The syntax is same as in the lme4 package. Example: y ~ 1 + sex + age + (1 | region) + (1 | region:school) - sex and age are the fixed effects, region and school are the nested random effects, school is nested within region.
 }
   \item{data}{
   The dataframe to analyze.
@@ -123,13 +125,12 @@ T. P. Hettmansperger and J. W. McKean. Robust Nonparametric Statistical Methods.
 \examples{
 data(schools)
 
-rlme.fit = rlme(y ~ 1 + sex + age + (1 | school) + (1 | school:section), schools, method="gr")
+rlme.fit = rlme(y ~ 1 + sex + age + (1 | region) + (1 | region:school), schools, method="gr")
 summary(rlme.fit)
-str(rlme.fit)
 
-#Try method="geer", "reml", "ml" and "jr" along with rprpair="hl-disp" and "med-mad"
-#weight="hbr" is for the gee method.
+%str(rlme.fit)
+%Try method="geer", "reml", "ml" and "jr" along with 
+%rprpair="hl-disp" (not robust), and "med-mad" (robust),
+%weight="hbr" is for the gee method.
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
 \keyword{ models }

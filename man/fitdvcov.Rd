@@ -34,7 +34,7 @@ fitdvcov(x1, beta1, beta2, vcw)
 
 data(schools)
 
-model = y ~ 1 + sex + age + (1 | school) + (1 | section)
+model = y ~ 1 + sex + age + (1 | region) + (1 | region:school)
 
 # Extract covariants into matrix
 cov = as.matrix(data.frame(schools[,"sex"], schools[,"age"]))

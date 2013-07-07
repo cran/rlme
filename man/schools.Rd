@@ -15,8 +15,8 @@ The data in Program for International Assessment (PISA) on academic proficiency 
     \item{\code{socio}}{a numeric vector}
     \item{\code{sex}}{a numeric vector}
     \item{\code{age}}{a numeric vector}
-    \item{\code{school}}{a numeric vector indicating the school}
-    \item{\code{section}}{a numeric vector indicating the section within school}
+    \item{\code{region}}{a numeric vector indicating four regions}
+    \item{\code{school}}{a numeric vector indicating the schools within region}
   }
 }
 \references{
@@ -30,7 +30,7 @@ OECD (2010). PISA 2009 Results. http://www.oecd.org/
 #
 
 # data(schools)
-# rlme.fit = rlme(y ~ 1 + sex + age + (1 | school) + (1 | school:section), schools, method="gr")
+# rlme.fit = rlme(y ~ 1 + sex + age + (1 | region) + (1 | region:school), schools, method="gr")
 # summary(rlme.fit)
 
 }

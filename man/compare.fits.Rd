@@ -31,14 +31,14 @@ Returns tdbeta and cfits values.
 \examples{
 
 data(schools)
-model = y ~ 1 + sex + age + (1 | school) + (1 | section)
+model = y ~ 1 + sex + age + (1 | region) + (1 | region:school)
 
 # Extract covariants into matrix
 cov = as.matrix(data.frame(schools[,"sex"], schools[,"age"]))
 
 # Fit the models using each method
-reml.fit = rlme(model, schools, method="REML")
-gr.fit = rlme(model, schools, method="GR")
+reml.fit = rlme(model, schools, method="reml")
+gr.fit = rlme(model, schools, method="gr")
 
 compare.fits(cov, reml.fit, gr.fit)
 }

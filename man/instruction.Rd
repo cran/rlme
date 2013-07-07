@@ -30,8 +30,10 @@ A data frame on school instruction results.
 West, B., Welch, K. B., & Galecki, A. T. (2006). Linear mixed models: a practical guide using statistical software. Chapman & Hall/CRC.
 }
 \examples{
-# The following code takes a few minutes to run. In the interest of saving CRAN's example testing time,
-# it has been commented out. If you want to use it, just uncomment and run.
+# The following code takes a few minutes to run.
+# In the interest of saving CRAN's example testing time,
+# it has been commented out. If you want to use it,
+# just uncomment and run.
 
 # data(instruction)
 # attach(instruction)
