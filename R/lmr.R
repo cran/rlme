@@ -1,3 +1,40 @@
+#' Rank Based Fixed Effect Regression
+#' 
+#' Computes rank based regression estimates for fixed effect models.
+#' 
+#' 
+#' @param f A model formula
+#' @param data Data to use for model fitting
+#' @param se Boolean indicating whether or not to calculate standard errors for
+#' intercept and slope estimates
+#' @param method Optimization method to use. Will accept any method usable by
+#' optim, e.g. one of c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "SANN",
+#' "Brent"). "BFGS" or "L-BFGS-B" are reccomended. "L-BFGS-B" should be used
+#' for large datasets to conserve memory.
+#' @return
+#'   \item{fixed.effects}{ Fixed effect estimates }
+#'   \item{ehat}{Residuals from model }
+#'   
+#' @author Herb Susmann
+#' 
+#' @seealso rlme, optim
+#' 
+#' @examples
+#' 
+#' # load schools data
+#' data(schools)
+#' 
+#' # Fit fixed effects model with lmr
+#' lmr.fit = lmr(y ~ age + sex, data=schools)
+#' 
+#' summary(lmr.fit)
+#' 
+#' # Fit with lmr and calculate standard errors
+#' lmr.fit = lmr(y ~ age + sex, data=schools, se=TRUE)
+#' 
+#' summary(lmr.fit)
+#' 
+#' @export
 lmr <- function(f, data, se=FALSE, method='L-BFGS-B') {
   #for large data, use method='L-BFGS-B'
   

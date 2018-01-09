@@ -1,6 +1,4 @@
-sigymake2 <-
-function (I, sec, mat, siga2, sige2) 
-{
+sigymake2 <- function(I, sec, mat, siga2, sige2) {
     ss = apply(mat, 1, sum)
     n = sum(ss)
     iflag = 0

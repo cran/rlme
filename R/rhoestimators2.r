@@ -1,6 +1,4 @@
-beta_var2 <-
-function (x, school, tauhat, v1, v2, sec) 
-{
+beta_var2 <- function (x, school, tauhat, v1, v2, sec) {
     x <- as.matrix(x)
     ublock <- unique(school)
     I <- length(ublock)
@@ -18,9 +16,7 @@ function (x, school, tauhat, v1, v2, sec)
     list(var = V)
 }
 
-Bmat2 <-
-function (v1, v2, block) 
-{
+Bmat2 <- function (v1, v2, block) {
     ublock <- unique(block)
     m <- length(ublock)
     N <- length(block)
@@ -39,11 +35,8 @@ function (v1, v2, block)
     }
     B
 }
-file <-
-"rhoestimators2.r"
-jrfit2 <-
-function (pp, ehat, ahat, block) 
-{
+
+jrfit2 <- function (pp, ehat, ahat, block) {
     p = pp - 1
     ublock <- unique(block)
     m <- length(ublock)

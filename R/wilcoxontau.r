@@ -1,7 +1,5 @@
-wilcoxontau <-
-  function (resd, p, delta = if ((length(resd)/p) > 5) 0.8 else 0.95, 
-            param = 2, verbose=FALSE) 
-  {
+wilcoxontau <- function(resd, p, delta = if ((length(resd)/p) > 5) 0.8 else 0.95, 
+            param = 2, verbose=FALSE) {
     # Bootstrapping for large datasets
     if(length(resd) > 3000) {
       sample(resd, 1000, replace=TRUE)
@@ -56,10 +54,8 @@ wilcoxontau <-
     wilcoxontau
   }
 
-old.wilcoxontau <-
-  function (resd, p, delta = if ((length(resd)/p) > 5) 0.8 else 0.95, 
-            param = 2) 
-  {
+old.wilcoxontau <- function(resd, p, delta = if ((length(resd)/p) > 5) 0.8 else 0.95, 
+            param = 2) {
     eps <- 1e-06
     n <- length(resd)
     temp <- pairup(resd)

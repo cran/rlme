@@ -1,9 +1,57 @@
-file <-
-"three_methods.r"
-GEER_est <-
-function (x, y, I, sec, mat, school, section, weight = "wil", 
-    rprpair = "hl-disp", verbose=FALSE) 
-{
+#' GEER: General Estimating Equation Rank-Based Estimation Method
+#' 
+#' The package rlme calls this function for gee method, one of the methods
+#' proposed in Bilgic's study (2012). Also see Kloke et al. (2013).  %% ~~ A
+#' concise (1-5 lines) description of what the function does. ~~
+#' 
+#' 
+#' @param x Design matrix, pxn, without intercept.
+#' @param y Response vector of nx1.
+#' @param I Number of clusters.
+#' @param sec A vector of subcluster numbers in clusters.
+#' @param mat A matrix of numbers of observations in subclusters.  Dimension is
+#' Ixmax(number ofsubclusters). Each row indicates one cluster.
+#' @param school A vector of clusters, nx1.
+#' @param section A vector of subclusters, nx1.
+#' @param weight When weight="hbr", it uses hbr weights in GEE weights. By
+#'   default, ="wil", it uses Wilcoxon weights. See the theory in the references.
+#' @param rprpair By default, it uses "hl-disp" in the random prediction
+#'   procedure (RPP). Also, "med-mad" would be an alternative.
+#' @param verbose Boolean indicating whether to print out diagnostic messages.
+#' 
+#' @return
+#'   \item{theta}{ Fixed effect estimates. }
+#'   \item{ses}{ Standard error for the fixed esimates. }
+#'   \item{sigma}{ Variances of cluster, subcluster, and residual. }
+#'   \item{ehat}{ Raw error. }
+#'   \item{ehats}{ Independence error from last weighted step. }
+#'   \item{effect_sch}{ Cluster random error. }
+#'   \item{effect_sec}{ Subcluster random error. }
+#'   \item{effect_err}{ Epsilon error. }
+#'   
+#' @author Yusuf K. Bilgic, yekabe@hotmail.com
+#' 
+#' @seealso rlme, GR_est, JR_est, rprmeddisp
+#' 
+#' @references Y. K. Bilgic. Rank-based estimation and prediction for mixed
+#' effects models in nested designs. 2012. URL
+#' http://scholarworks.wmich.edu/dissertations/40. Dissertation.
+#' 
+#' A. Abebe, J. W. McKean, J. D. Kloke and Y. K. Bilgic. Iterated reweighted
+#' rank-based estimates for gee models. 2013. Submitted.
+#' 
+#' @keywords models
+#' 
+#' @importFrom magic adiag
+#' 
+#' @examples
+#' 
+#' # See the rlme function.
+#' 
+#' @export 
+GEER_est <- function(x, y, I, sec, mat, school, section, weight = "wil", rprpair = "hl-disp", verbose=FALSE) {
+    location = 2
+    tol <- 1e-23
     weight = tolower(weight)
     if (weight == "wil") {
         weight = 1
@@ -18,8 +66,7 @@ function (x, y, I, sec, mat, school, section, weight = "wil",
     b0 = fit$theta
     
     ehat0 = y - cbind(1, x) %*% b0
-    fitvc = rprmeddis(I, sec, mat, ehat = ehat0, location, scale, 
-        rprpair = rprpair)
+    fitvc = rprmeddis(I, sec, mat, ehat = ehat0, location, scale, rprpair = rprpair)
     sigmaa2 = fitvc$siga2
     sigmaw2 = fitvc$sigw2
     sigmae2 = fitvc$sigmae2
@@ -143,15 +190,58 @@ function (x, y, I, sec, mat, school, section, weight = "wil",
         se41 = sqrt(diag(varb))
     }
     
-    list(theta = theta, ses_AP = se31, ses_CS = se41, varb = varb, 
-        sigma = sigma, ehat = ehat, effect_sch = effect_sch, 
-        effect_sec = effect_sec, effect_err = effect_err, iter = iter, 
-        w = diag(w))
+    list(theta = theta,
+         ses_AP = se31,
+         ses_CS = se41,
+         varb = varb, 
+         sigma = sigma,
+         ehat = ehat,
+         effect_sch = effect_sch, 
+         effect_sec = effect_sec,
+         effect_err = effect_err,
+         iter = iter, 
+         w = diag(w))
 }
 
-GR_est <-
-function (x, y, I, sec, mat, school, section, rprpair = "hl-disp", verbose=FALSE) 
-{
+
+
+#' GR Method
+#' 
+#' Fits a model using the GR method
+#' 
+#' 
+#' @param x Covariate matrix or data frame.
+#' @param y Response matrix or data frame.
+#' @param I Number of clusters 
+#' @param sec A vector of subcluster numbers in clusters.
+#' @param mat A matrix of numbers of observations in subclusters.  Dimension is
+#' Ixmax(number ofsubclusters). Each row indicates one cluster.
+#' @param school A vector of clusters, nx1.
+#' @param section A vector of subclusters, nx1.
+#' @param rprpair By default, it uses "hl-disp" in the random prediction
+#' procedure (RPP). Also, "med-mad" would be an alternative.
+#' @param verbose Boolean indicating whether to print out messages from the
+#' algorithm.
+#' 
+#' @return
+#'   \item{theta}{ Fixed effect estimates. }
+#'   \item{ses}{ Standard error for the fixed esimates. }
+#'   \item{sigma}{ Variances of cluster, subcluster, and residual. }
+#'   \item{ehat}{ Raw error. }
+#'   \item{ehats}{ Independence error from last weighted step. }
+#'   \item{effect_sch}{ Cluster random error. }
+#'   \item{effect_sec}{ Subcluster random error. }
+#'   \item{effect_err}{ Epsilon error. }
+#'   
+#' @author Yusuf Bilgic
+#' @keywords models
+#' @examples
+#' 
+#' # See rlme function
+#' 
+#' @export
+GR_est <- function(x, y, I, sec, mat, school, section, rprpair = "hl-disp", verbose=FALSE) {
+  
     init = T
     sigmaa2 = 1
     sigmaw2 = 1
@@ -269,15 +359,55 @@ function (x, y, I, sec, mat, school, section, rprpair = "hl-disp", verbose=FALSE
     
     ses <- sqrt(diag(varb))
     
-    list(theta = theta, ses = ses, sigma = sigma, varb = varb, 
-        ehat = ehat, ehats = ehats, effect_sch = effect_sch, 
-        effect_sec = effect_sec, effect_err = effect_err, iter = i, 
-        coll = coll, xstar = xstar, ystar = ystar)
+    list(theta = theta, 
+         ses = ses,
+         sigma = sigma,
+         varb = varb, 
+         ehat = ehat,
+         ehats = ehats,
+         effect_sch = effect_sch, 
+         effect_sec = effect_sec,
+         effect_err = effect_err,
+         iter = i, 
+         coll = coll,
+         xstar = xstar,
+         ystar = ystar)
 }
 
-JR_est <-
-function (x, y, I, sec, mat, school, section, rprpair = "hl-disp", verbose=FALSE) 
-{
+
+
+#' JR Method
+#' 
+#' Fit a model using the JR method
+#' 
+#' 
+#' @param x Covariate matrix or data frame
+#' @param y Response matrix or data frame
+#' @param I Number of clusters.
+#' @param sec A vector of subcluster numbers in clusters.
+#' @param mat A matrix of numbers of observations in subclusters.  Dimension is
+#' Ixmax(number ofsubclusters). Each row indicates one cluster.
+#' \code{mat} here~~
+#' @param school A vector of clusters, nx1.
+#' @param section A vector of subclusters, nx1.
+#' @param rprpair By default, it uses "hl-disp" in the random prediction
+#' procedure (RPP). Also, "med-mad" would be an alternative. 
+#' @param verbose Boolean indicating whether to print out diagnostic messages.
+#' @return
+#'   \item{theta}{ Fixed effect estimates. }
+#'   \item{ses}{ Standard error for the fixed esimates. }
+#'   \item{sigma}{ Covariate variance estimates using RPP (Groggel and Dubnicka's procedure). }
+#'   \item{ehat}{ Raw error. }
+#'   \item{effect_sch}{ Cluster random error. }
+#'   \item{effect_sec}{ Subcluster random error. }
+#'   \item{effect_err}{ Epsilon error. }
+#'   
+#' @author Yusuf Bilgic
+#' @seealso rlme
+#' @export
+JR_est <- function(x, y, I, sec, mat, school, section, rprpair = "hl-disp", verbose=FALSE) {
+    location = 2
+    tol <- 1e-23
     pp <- dim(x)[2] + 1
     
     # Fit the fixed effect coefficients
@@ -319,8 +449,7 @@ function (x, y, I, sec, mat, school, section, rprpair = "hl-disp", verbose=FALSE
     }
     
     rho1 <- rhosectC(ahat, sec, mat)
-    rho1_est_9 <- sum(sum((apply(rho1$rho2, 1, sum, na.rm = T)/apply(choose(mat, 2), 
-        1, sum)) * t(apply(mat, 1, sum))))/sum(sum(mat))
+    rho1_est_9 <- sum(sum((apply(rho1$rho2, 1, sum, na.rm = T)/apply(choose(mat, 2), 1, sum)) * t(apply(mat, 1, sum))))/sum(sum(mat))
     
     
     if(verbose == TRUE) {
@@ -330,8 +459,7 @@ function (x, y, I, sec, mat, school, section, rprpair = "hl-disp", verbose=FALSE
     #rho2 <- rhosch(ahat, school, section)
     rho2 <- rhoschC(ahat, sec, mat)
     
-    rho2_est_5 <- sum(((rho2$rho2/rho2$npair) * rho2$nvec)/sum(rho2$nvec), 
-        na.rm = T)
+    rho2_est_5 <- sum(((rho2$rho2/rho2$npair) * rho2$nvec)/sum(rho2$nvec), na.rm = T)
     v1 = 1
     v2 = rho1_est_9
     v3 = rho2_est_5
@@ -346,22 +474,60 @@ function (x, y, I, sec, mat, school, section, rprpair = "hl-disp", verbose=FALSE
     theta <- as.vector(theta)
     sigma <- sigma
     
-    list(theta = theta, ses = ses, varb = V, sigma = sigma, ehat = ehat, 
-        effect_sch = effect_sch, effect_sec = effect_sec, effect_err = effect_err)
+    list(theta = theta,
+         ses = ses,
+         varb = V,
+         sigma = sigma,ehat = ehat, 
+         effect_sch = effect_sch,
+         effect_sec = effect_sec,
+         effect_err = effect_err)
 }
 
 
-LM_est <-
-function (x, y, dat, method = "REML") 
-{
+
+#' Linear Model Estimation using the nlme package.
+#' 
+#' This gets the REML or ML estimates and predictions of random effects from
+#' the nlme package. 
+#' function does.
+#' 
+#' 
+#' @param x Design matrix, (p+1)xn, with intercept.  
+#' @param y Response vector of nx1.
+#' @param dat Data frame
+#' @param method Character string indicating method to use, either "ML" or
+#' "REML" (defaults to REML).
+#' @return
+#'   \item{theta}{ Fixed effects esimates.}
+#'   \item{ses}{ Standard error for fixed effects.}
+#'   \item{varb}{ Variances.}
+#'   \item{sigma}{ Error. }
+#'   \item{ehat}{ Raw residuals }
+#'   \item{standr.lme}{ Standardized residual }
+#'   \item{effect_sch}{ Cluster random error. }
+#'   \item{effect_sec}{ Subcluster random error. }
+#'   \item{effect_err}{ Epsilon error. }
+#'   
+#' @author Yusuf Bilgic
+#' 
+#' @seealso \code{\link{rlme}}
+#' 
+#' @references J. Pinheiro, D. Bates, S. DebRoy, D. Sarkar and R Development
+#' Core Team. nlme linear and non- linear mixed effects models. The R Journal,
+#' 2011. URL http://CRAN.R-project.org/package=nlme. R package version 3.1-98.
+#' 
+#' @importFrom nlme random.effects
+#' @importFrom mgcv extract.lme.cov2
+#' @importFrom nlme lme
+#' 
+#' @keywords models
+#' @export
+LM_est <- function(x, y, dat, method = "REML") {
     model = as.formula(paste("y ~ 1 + ", paste(colnames(x), collapse = " + ")))
-    fit.lme = lme(model, data = dat, random = ~1 | school/section, 
-        method = method)
+    fit.lme = lme(model, data = dat, random = ~1 | school/section, method = method)
     theta0 <- extract.lme.cov2(fit.lme, dat, start.level = 3)$V[1]
-    theta2 <- extract.lme.cov2(fit.lme, dat, start.level = 2)$V[[1]][1, 
-        1] - theta0
-    theta1 <- extract.lme.cov2(fit.lme, dat, start.level = 1)$V[[1]][1, 
-        1] - (theta0 + theta2)
+    theta2 <- extract.lme.cov2(fit.lme, dat, start.level = 2)$V[[1]][1, 1] - theta0
+    theta1 <- extract.lme.cov2(fit.lme, dat, start.level = 1)$V[[1]][1, 1] - (theta0 + theta2)
     sigma.l <- c(theta1, theta2, theta0)
     theta <- as.vector(summary(fit.lme)$tTable[, 1])
     intra_err.lm <- (theta0)/(sum(sigma.l))
@@ -375,7 +541,13 @@ function (x, y, dat, method = "REML")
     effect_err = as.vector(fit.lme$residuals[, 3])
     standr.lme = residuals(fit.lme, type = "pearson")
     standr.lme = as.vector(residuals(fit.lme, type = "pearson"))
-    list(theta = theta, ses = ses, varb = varb, sigma = sigma.l, 
-        ehat = ehat, effect_sch = effect_sch, effect_sec = effect_sec, 
-        effect_err = effect_err, standr.lme = standr.lme)
+    list(theta = theta,
+         ses = ses,
+         varb = varb,
+         sigma = sigma.l, 
+         ehat = ehat,
+         effect_sch = effect_sch,
+         effect_sec = effect_sec, 
+         effect_err = effect_err,
+         standr.lme = standr.lme)
 }

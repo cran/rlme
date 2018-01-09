@@ -1,7 +1,5 @@
-onesampwil <-
-function (x, test = T, alt = 0, theta0 = 0, alpha = 0.05, maktable = T, 
-    plotb = T) 
-{
+onesampwil <- function (x, test = T, alt = 0, theta0 = 0, alpha = 0.05, maktable = T, 
+    plotb = T) {
     n = length(x)
     if (test) {
         as = rank(abs(x - theta0))

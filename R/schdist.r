@@ -1,5 +1,4 @@
-schdist <-
-function (n, schpar, cn = 0) 
+schdist <- function(n, schpar, cn = 0) 
 {
     eps = 0.2
     sigmac = 5

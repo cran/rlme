@@ -1,5 +1,4 @@
-secdist <-
-function (n, secpar, cn = 0) 
+secdist <- function(n, secpar, cn = 0) 
 {
     eps = 0.2
     sigmac = 5

@@ -1,6 +1,4 @@
-errdist <-
-function (n, errpar, cn = 0) 
-{
+errdist <- function(n, errpar, cn = 0) {
     eps = 0.2
     sigmac = 5
     ind = rbinom(n, 1, eps)

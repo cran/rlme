@@ -1,20 +1,42 @@
-#rpr <-
-#function (ehat, school, section, rprpair = "hl-disp") 
-#{
-#    I = length(unique(factor(section)))
-#    sec = as.vector(sec_vec(school, section))
-#    mat = mat_vec(school, section)
-#    rprpair = tolower(rprpair)
-#    location = scale = 2
-#    if (rprpair == "med-mad") {
-#        location = scale = 1
-#    }
-#    return(rprmeddis(I, sec, mat, ehat, location, scale))
-#}
-
-rprmeddis <-
-function (I, sec, mat, ehat, location, scale, rprpair = "hl-disp") 
-{
+#' Rprmeddis
+#' 
+#' Robust rank-based prediction algorithm that gets predictions for random
+#' errors in three-level nested design. It needs one location and scale
+#' estimators. Hodges-Lehmann location estimate and dispersion functional
+#' estimate pair is called with rprpair="hl-disp" -by default- ; median and MAD
+#' pair is called with rprpair="med-mad" in rlme().
+#' 
+#' The rprmeddisp() function yields predictions of random effects and errors
+#' vectors along with scale estimates in each level. This function was designed
+#' for three-level nested design. See rprmeddisp2() in the package, this is for
+#' two-level nested design.
+#' 
+#' 
+#' @param I Number of clusters.
+#' @param sec A vector of subcluster numbers in clusters.
+#' @param mat A matrix of numbers of observations in subclusters.  Dimension is
+#' Ixmax(number ofsubclusters). Each row indicates one cluster. 
+#' @param ehat The residuals that inherits random effects and error effect to
+#' be predicted.
+#' @param location If location = scale = 1 then use Median and MAD in RPP If
+#' location = scale = 2 then use HL & Dispvar in RPP Note: this is deprecated.
+#' You should specify the location & scale parameters by using the rprpair
+#' parameter.
+#' @param scale 1 means mad, 2 means disp as scale estimators
+#' @param rprpair Character string indicating the location and scale parameters
+#' to use. Default to "hl-disp", but may also be "med-mad". See Bilgic (2012).
+#' 
+#' @author Yusuf Bilgic \email{yekabe@@hotmail.com}
+#' 
+#' @seealso \code{\link{rpr}} \code{\link{dispvar}}
+#' 
+#' @references Y. K. Bilgic. Rank-based estimation and prediction for mixed
+#' effects models in nested designs. 2012. URL
+#' http://scholarworks.wmich.edu/dissertations/40. Dissertation.
+#' 
+#' @importFrom MASS huber
+#' @export
+rprmeddis <- function(I, sec, mat, ehat, location, scale, rprpair = "hl-disp")  {
     rprpair = tolower(rprpair)
     if (rprpair == "hl-disp") {
         location = scale = 2

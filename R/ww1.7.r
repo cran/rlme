@@ -1,7 +1,6 @@
-blwts <-
-function (xmat, y, robdis2 = mycov.rob(as.matrix(xmat), method = "mcd")$robdis2, 
-    percent = 0.95, k = 2, intest = myltsreg(xmat, y)$coef) 
-{
+#' @importFrom MASS ltsreg
+blwts <- function(xmat, y, robdis2 = mycov.rob(as.matrix(xmat), method = "mcd")$robdis2, 
+    percent = 0.95, k = 2, intest = myltsreg(xmat, y)$coef) {
     xmat = as.matrix(xmat)
     y = as.matrix(y)
     n = dim(xmat)[1]
@@ -19,10 +18,9 @@ function (xmat, y, robdis2 = mycov.rob(as.matrix(xmat), method = "mcd")$robdis2,
     ans = tmp2[, 1] * tmp2[, 2]
     ans
 }
-cellmntest <-
-function (y, levels, amat = cbind(rep(1, max(levels) - 1), -1 * 
-    diag(max(levels) - 1)), delta = 0.8, param = 2, print.tbl = T) 
-{
+
+cellmntest <- function(y, levels, amat = cbind(rep(1, max(levels) - 1), -1 * 
+    diag(max(levels) - 1)), delta = 0.8, param = 2, print.tbl = T) {
     amat = rbind(amat)
     xcell = cellmnxy(levels)
     p = length(xcell[1, ])
@@ -34,9 +32,8 @@ function (y, levels, amat = cbind(rep(1, max(levels) - 1), -1 *
         p - 1))
     invisible(ans)
 }
-cellmnxy <-
-function (levels) 
-{
+
+cellmnxy <- function(levels) {
     k = max(levels)
     n = length(levels)
     cellmnxy = matrix(rep(0, n * k), ncol = k)
@@ -45,17 +42,15 @@ function (levels)
     }
     cellmnxy
 }
-centerx <-
-function (x) 
-{
+
+centerx <- function(x) {
     x = as.matrix(x)
     n = length(x[, 1])
     one = matrix(rep(1, n), ncol = 1)
     x - (one %*% t(one)/n) %*% x
 }
-diffwls <-
-function (x, y, delta = 0.8, param = 2, conf = 0.95) 
-{
+
+diffwls <- function(x, y, delta = 0.8, param = 2, conf = 0.95) {
     x = as.matrix(centerx(x))
     n = length(x[, 1])
     p = length(x[1, ])
@@ -82,9 +77,8 @@ function (x, y, delta = 0.8, param = 2, conf = 0.95)
         betals = templs$coef, vcw = vcw, tau = tempvc$tau, taus = tempvc$tau1, 
         se = se)
 }
-droptest <-
-function (xmat, y, amat, delta = 0.8, param = 2, print.tbl = T) 
-{
+
+droptest <- function(xmat, y, amat, delta = 0.8, param = 2, print.tbl = T) {
     xmat = as.matrix(xmat)
     amat = rbind(amat)
     p = length(xmat[1, ])
@@ -132,12 +126,9 @@ function (xmat, y, amat, delta = 0.8, param = 2, print.tbl = T)
     invisible(list(full = full, dred = dred, dfull = dfull, tauhat = tauhat, 
         q = q, fr = fr, pval = pval))
 }
-file <-
-"ww1.7.r"
-fitdiag <-
-function (x, y, est = c("WIL", "GR"), delta = 0.8, param = 2, 
-    conf = 0.95) 
-{
+
+fitdiag <- function(x, y, est = c("WIL", "GR"), delta = 0.8, param = 2, 
+    conf = 0.95) {
     x = as.matrix(centerx(x))
     n = dim(x)[1]
     p = dim(x)[2]
@@ -188,10 +179,9 @@ function (x, y, est = c("WIL", "GR"), delta = 0.8, param = 2,
         betahbr = temphbr$tmp1$coef, betals = templs$coef, vcw = vcw, 
         tau = tempvc$tau, taus = tempvc$tau1, se = se)
 }
-grwts <-
-function (xmat, robdis2 = mycov.rob(as.matrix(xmat), method = "mcd")$robdis2, 
-    percent = 0.95, k = 2) 
-{
+
+grwts <- function(xmat, robdis2 = mycov.rob(as.matrix(xmat), method = "mcd")$robdis2, 
+    percent = 0.95, k = 2) {
     xmat = as.matrix(xmat)
     n = dim(xmat)[1]
     p = dim(xmat)[2]
@@ -201,10 +191,10 @@ function (xmat, robdis2 = mycov.rob(as.matrix(xmat), method = "mcd")$robdis2,
     ans = tmp[, 1] * tmp[, 2]
     ans
 }
-hbrwts <-
-function (xmat, y, robdis2 = mycov.rob(as.matrix(xmat), method = "mcd")$robdis2, 
-    percent = 0.95, intest = myltsreg(xmat, y)$coef) 
-{
+
+#' @importFrom MASS ltsreg
+hbrwts <- function(xmat, y, robdis2 = mycov.rob(as.matrix(xmat), method = "mcd")$robdis2, 
+    percent = 0.95, intest = myltsreg(xmat, y)$coef) {
     xmat = as.matrix(xmat)
     y = as.matrix(y)
     n = dim(xmat)[1]
@@ -221,10 +211,10 @@ function (xmat, y, robdis2 = mycov.rob(as.matrix(xmat), method = "mcd")$robdis2,
     ans = psi(abs(tmp[, 1] * tmp[, 2]))
     ans
 }
-mycov.rob <-
-function (x, cor = FALSE, quantile.used = floor((n + p + 1)/2), 
-    method = c("mve", "mcd", "classical"), nsamp = "best") 
-{
+
+#' @import stats
+mycov.rob <- function(x, cor = FALSE, quantile.used = floor((n + p + 1)/2), 
+    method = c("mve", "mcd", "classical"), nsamp = "best") {
     if (v1.9.0()) {
         if (!any(search() == "package:MASS")) 
             stop("mycov.rob:  The 'MASS' package is not loaded.")
@@ -280,10 +270,11 @@ function (x, cor = FALSE, quantile.used = floor((n + p + 1)/2),
             on.exit(assign(".Random.seed", save.seed, envir = .GlobalEnv))
         }
         set.seed(123)
-        z <- .C("mve_fitlots", as.double(x), as.integer(n), as.integer(p), 
-            as.integer(qn), as.integer(method == "mcd"), as.integer(samp), 
-            as.integer(ps), as.integer(nsamp), crit = double(1), 
-            sing = integer(1), bestone = integer(n), PACKAGE = PACK)
+        # Modified HPS
+        # z <- .C("mve_fitlots", as.double(x), as.integer(n), as.integer(p), 
+        #     as.integer(qn), as.integer(method == "mcd"), as.integer(samp), 
+        #     as.integer(ps), as.integer(nsamp), crit = double(1), 
+        #     sing = integer(1), bestone = integer(n), PACKAGE = PACK)
         z$sing <- paste(z$sing, "singular samples of size", ps, 
             "out of", nsamp)
         crit <- z$crit + 2 * sum(log(divisor)) + if (method == 
@@ -314,9 +305,9 @@ function (x, cor = FALSE, quantile.used = floor((n + p + 1)/2),
     ans$n.obs <- n
     ans
 }
-mylmsreg <-
-function (xmat, y) 
-{
+
+#' @importFrom MASS lmsreg
+mylmsreg <- function(xmat, y) {
     if (v1.9.0()) {
         if (!any(search() == "package:MASS")) 
             stop("mycov.rob:  The 'MASS' package is not loaded.")
@@ -335,9 +326,9 @@ function (xmat, y)
     ans = list(coefficients = tmp$coefficients, residuals = tmp$residuals)
     ans
 }
-myltsreg <-
-function (xmat, y) 
-{
+
+#' @importFrom MASS ltsreg
+myltsreg <- function(xmat, y) {
     if (v1.9.0()) {
         if (!any(search() == "package:MASS")) 
             stop("mycov.rob:  The 'MASS' package is not loaded.")
@@ -356,9 +347,9 @@ function (xmat, y)
     ans = list(coefficients = tmp$coefficients, residuals = tmp$residuals)
     ans
 }
-mymahalanobis <-
-function (x, center, cov, inverted = FALSE, tol.inv = 1e-17) 
-{
+
+#' @importFrom MASS ginv
+mymahalanobis <- function(x, center, cov, inverted = FALSE, tol.inv = 1e-17) {
     x <- if (is.vector(x)) 
         matrix(x, nrow = length(x))
     else as.matrix(x)
@@ -369,9 +360,8 @@ function (x, center, cov, inverted = FALSE, tol.inv = 1e-17)
     names(retval) <- rownames(x)
     retval
 }
-pairup.ww <-
-function (x, type = "less") 
-{
+
+pairup.ww <- function(x, type = "less") {
     x = as.matrix(x)
     n = dim(x)[1]
     i = rep(1:n, rep(n, n))
@@ -387,9 +377,8 @@ function (x, type = "less")
         j, ], neq = ans)
     ans
 }
-plotfitdiag <-
-function (result) 
-{
+
+plotfitdiag <- function(result) {
     n = length(result$cfit)
     main1 = paste("CFITS for", result$est[1], "and", result$est[2])
     main2 = paste("TDBETA:", round(result$tdbeta, 2), "Benchmark:", 
@@ -400,17 +389,15 @@ function (result)
     points(1:n, result$cfit)
     abline(h = c(-1 * result$bmcf, result$bmcf))
 }
-psi <-
-function (x) 
-{
+
+psi <- function(x) {
     x[x == -Inf] = -100
     x[x == Inf] = 100
     ans = -1 * (x <= -1) + x * (-1 < x & x < 1) + 1 * (x >= 1)
     ans
 }
-pwcomp <-
-function (y, levels, delta = 0.8, param = 2) 
-{
+
+pwcomp <- function(y, levels, delta = 0.8, param = 2) {
     p <- max(levels)
     m <- pairup(1:p)
     rnames <- NULL
@@ -427,9 +414,8 @@ function (y, levels, delta = 0.8, param = 2)
     dimnames(pval) <- list(rnames, "PVAL")
     pval
 }
-redmod <-
-function (xmat, amat) 
-{
+
+redmod <- function(xmat, amat) {
     xmat = as.matrix(xmat)
     amat = rbind(amat)
     q <- length(amat[, 1])
@@ -443,18 +429,16 @@ function (xmat, amat)
     }
     t(redmod)
 }
-regrtest <-
-function (xmat, y, delta = 0.8, param = 2, print.tbl = T) 
-{
+
+regrtest <- function(xmat, y, delta = 0.8, param = 2, print.tbl = T) {
     xmat = as.matrix(xmat)
     p = dim(xmat)[2]
     ans = suppressWarnings(droptest(xmat, y, diag(rep(1, p)), 
         delta, param, print.tbl))
     invisible(ans)
 }
-stanresid <-
-function (x, y, delta = 0.8, param = 2, conf = 0.95) 
-{
+
+stanresid <- function(x, y, delta = 0.8, param = 2, conf = 0.95) {
     xc = as.matrix(centerx(x))
     n = length(y)
     p = length(xc[1, ])
@@ -478,9 +462,8 @@ function (x, y, delta = 0.8, param = 2, conf = 0.95)
     list(stanr = stanresid, ind = ind, rawresids = resid, betaw = tempw$tmp1$coef, 
         tau = tau, taustar = taus)
 }
-studres.gr <-
-function (x, bmat, res, delta = 0.8, center = T) 
-{
+
+studres.gr <- function(x, bmat, res, delta = 0.8, center = T) {
     x = as.matrix(x)
     if (center) {
         x = apply(x, 2, function(x) {
@@ -515,9 +498,8 @@ function (x, bmat, res, delta = 0.8, center = T)
         0]
     as.vector(res/sqrt(diag(v)))
 }
-studres.hbr <-
-function (x, bmat, res, delta = 0.8, center = T) 
-{
+
+studres.hbr <- function(x, bmat, res, delta = 0.8, center = T) {
     x = as.matrix(x)
     if (center) {
         x = apply(x, 2, function(x) {
@@ -554,9 +536,8 @@ function (x, bmat, res, delta = 0.8, center = T)
         0]
     as.vector(res/sqrt(diag(v)))
 }
-taustar <-
-function (resid, p, conf = 0.95) 
-{
+
+taustar <- function(resid, p, conf = 0.95) {
     n = length(resid)
     zc = qnorm((1 + conf)/2)
     c1 = (n/2) - ((sqrt(n) * zc)/2) - 0.5
@@ -571,9 +552,8 @@ function (resid, p, conf = 0.95)
     taustar = df * ((sqrt(n) * (u - l))/(2 * zc))
     taustar
 }
-theilwts <-
-function (xmat) 
-{
+
+theilwts <- function(xmat) {
     xmat = as.matrix(xmat)
     p = dim(xmat)[2]
     xpairs = pairup(xmat)
@@ -587,17 +567,16 @@ function (xmat)
     ans[ans == Inf] = 0
     ans
 }
-v1.9.0 <-
-function () 
-{
+
+v1.9.0 <- function() {
     major = version$major
     minor = version$minor
     n = as.numeric(paste(major, minor, sep = ""))
     n >= 19
 }
-varcov.gr <-
-function (x, bmat, res, delta = 0.8) 
-{
+
+#' @importFrom MASS ginv
+varcov.gr <- function(x, bmat, res, delta = 0.8) {
     x = as.matrix(x)
     xbar = as.matrix(apply(x, 2, mean))
     bmat = as.matrix(bmat)
@@ -623,9 +602,8 @@ function (x, bmat, res, delta = 0.8)
         cmat = cmat, vmat = vmat)
     ans
 }
-varcov.hbr <-
-function (x, bmat, res, delta = 0.8) 
-{
+
+varcov.hbr <- function(x, bmat, res, delta = 0.8) {
     x = as.matrix(x)
     xbar = as.matrix(apply(x, 2, mean))
     bmat = as.matrix(bmat)
@@ -654,9 +632,8 @@ function (x, bmat, res, delta = 0.8)
         cmat = cmat, vmat = vmat)
     ans
 }
-wald <-
-function (est, varcov, amat, true, n) 
-{
+
+wald <- function(est, varcov, amat, true, n) {
     true = as.matrix(true)
     est = as.matrix(est)
     amat = as.matrix(amat)
@@ -669,9 +646,8 @@ function (est, varcov, amat, true, n)
     pvalue = 1 - pf(T2, q, n - p - 1)
     c(T2, pvalue)
 }
-wilcoxonpseudo <-
-function (x, y, delta = 0.8, param = 2) 
-{
+
+wilcoxonpseudo <- function(x, y, delta = 0.8, param = 2) {
     x = as.matrix(x)
     n = length(x[, 1])
     p = length(x[1, ])
@@ -691,10 +667,9 @@ function (x, y, delta = 0.8, param = 2)
     wilcoxonpseudo = fitw + tau * zeta * sc
     wilcoxonpseudo
 }
-wilcoxontau.ww <-
-function (resd, p, delta = if ((length(resd)/p) > 5) 0.8 else 0.95, 
-    param = 2) 
-{
+
+wilcoxontau.ww <- function(resd, p, delta = if ((length(resd)/p) > 5) 0.8 else 0.95, 
+    param = 2) {
     eps <- 1e-06
     n <- length(resd)
     temp <- pairup(resd, type="less")
@@ -724,9 +699,8 @@ function (resd, p, delta = if ((length(resd)/p) > 5) 0.8 else 0.95,
     names(wilcoxontau) <- NULL
     wilcoxontau
 }
-wildisp <-
-function (resid) 
-{
+
+wildisp <- function(resid) {
     n = length(resid)
     sresid = sort(resid)
     scores = sqrt(12) * ((1:n)/(n + 1) - 0.5)
@@ -735,20 +709,18 @@ function (resid)
     scores = (scores - mn)/con
     sum(scores * sresid)
 }
-wilwts <-
-function (xmat) 
-{
+
+wilwts <- function(xmat) {
     xmat = as.matrix(xmat)
     n = dim(xmat)[1]
     ans = rep(1, n * (n - 1)/2)
     ans
 }
-wts <-
-function (xmat, y, type = "WIL", percent = 0.95, k = 2, robdis2 = if (type != 
+
+wts <- function(xmat, y, type = "WIL", percent = 0.95, k = 2, robdis2 = if (type != 
     "WIL") mycov.rob(as.matrix(xmat), method = "mcd")$robdis2 else NULL, 
     intest = if (type == "HBR" | type == "BL") myltsreg(xmat, 
-        y)$coef else NULL) 
-{
+        y)$coef else NULL) {
     xmat = as.matrix(xmat)
     y = as.matrix(y)
     switch(type, WIL = wilwts(xmat), THEIL = theilwts(xmat), 
@@ -756,9 +728,8 @@ function (xmat, y, type = "WIL", percent = 0.95, k = 2, robdis2 = if (type !=
             y, robdis2, percent, intest), BL = blwts(xmat, y, 
             robdis2, percent, k, intest), stop("wts:  TYPE should be WIL, THEIL, GR, HBR or BL"))
 }
-wwest <-
-function (x, y, bij = "WIL", center = F, print.tbl = T) 
-{
+
+wwest <- function(x, y, bij = "WIL", center = F, print.tbl = T) {
     if (is.character(bij)) {
         type = bij
         bij = switch(bij, WIL = wilwts(x), THEIL = theilwts(x), 
@@ -836,9 +807,10 @@ function (x, y, bij = "WIL", center = F, print.tbl = T)
     }
     invisible(list(tmp1 = tmp1, tmp2 = tmp2, ans = ans))
 }
-wwfit <-
-function (x, y, bij = wilwts(as.matrix(x)), center = F) 
-{
+
+#' @importFrom quantreg rq.fit.br
+#' @importFrom quantreg rq.fit.fnb
+wwfit <- function(x, y, bij = wilwts(as.matrix(x)), center = F) {
     x = as.matrix(x)
     n = dim(x)[1]
     p = dim(x)[2]

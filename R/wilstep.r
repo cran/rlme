@@ -1,7 +1,36 @@
-wilstep <-
-function (I, sec, mat, init = F, y, x, sigmaa2 = 1, sigmaw2 = 1, 
-    sigmae2 = 1, thetaold = c(0), eps = 1e-04, iflag2 = 0, rprpair = "hl-disp") 
-{
+#' Wilcoxon One Step Rank-based Estimate in GR Method
+#' 
+#' Gets weighted rank based fittings for nested designs.
+#' 
+#' Initial inputs are from the independent model.
+#' 
+#' @param I Number of clusters.
+#' @param sec A vector of subcluster numbers in clusters.
+#' @param mat A matrix of numbers of observations in subclusters.  Dimension is
+#' Ixmax(number ofsubclusters). Each row indicates one cluster.
+#' @param init boolean
+#' @param y Response vector of nx1.
+#' @param x Design matrix, pxn, without intercept.
+#' @param sigmaa2 Initial sigma for cluster in three-level design. 
+#' @param sigmaw2 Initial sigma for subcluster in three-level design.
+#' @param sigmae2 Initial sigma for error in three-level design.
+#' @param thetaold Initial input. 
+#' @param eps Epsilon value 
+#' @param iflag2 y or n 
+#' @param rprpair Either 'hl-disp' or 'med-mad'
+#' 
+#' @author J. W. McKean and Y. K. Bilgic
+#' 
+#' @references Y. K. Bilgic and J. W. McKean. Iteratively reweighted
+#' generalized rank-based method in mixed models. 2013. Under preperation.
+#' 
+#' J. T. Terpstra and J. W. McKean. Rank-based analysis of linear models using
+#' R. Journal of Statistical Software, 14(7) 1 - 26, 7 2005. ISSN 1548-7660.
+#' URL http://www.jstatsoft.org/v14/i07.
+#' 
+#' @export
+wilstep <- function(I, sec, mat, init = F, y, x, sigmaa2 = 1, sigmaw2 = 1, 
+    sigmae2 = 1, thetaold = c(0), eps = 1e-04, iflag2 = 0, rprpair = "hl-disp") {
     location = scale = 2
     if (rprpair == "med-mad") {
         location = scale = 1

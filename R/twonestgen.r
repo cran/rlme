@@ -1,7 +1,5 @@
-twonestgen <-
-function (I, sec, mat, schdist, schpar, secdist, secpar, errdist, 
-    errpar, thetatrue) 
-{
+twonestgen <- function(I, sec, mat, schdist, schpar, secdist, secpar, errdist, 
+    errpar, thetatrue) {
     matre = matrix(c(0, 0), ncol = 2)
     school = c(0)
     class = c(0)

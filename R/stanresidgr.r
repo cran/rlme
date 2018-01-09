@@ -1,6 +1,27 @@
-stanresidgr <-
-function (x, y, resid, delta = 0.8, param = 2, conf = 0.95) 
-{
+#' Calculate Standard Residuals
+#' 
+#' Standardizes the residuals obtained from the GR fitting.
+#' 
+#' 
+#' @param x Design matrix.
+#' @param y Response vector.
+#' @param resid Residuals obtained from the rank-based fitting.
+#' @param delta See HM (2012).
+#' @param param See HM (2012).
+#' @param conf See HM (2012).
+#' 
+#' @author J. W.  McKean
+#' 
+#' @references T. P. Hettmansperger and J. W. McKean. Robust Nonparametric
+#' Statistical Methods. Chapman Hall, 2012.
+#' 
+#' Y. K. Bilgic. Rank-based estimation and prediction for mixed effects models
+#' in nested designs. 2012. URL http://scholarworks.wmich.edu/dissertations/40.
+#' Dissertation.
+#' 
+#' @importFrom MASS ginv
+#' @export
+stanresidgr <- function(x, y, resid, delta = 0.8, param = 2, conf = 0.95) {
     xc = as.matrix(centerx(x))
     n = length(y)
     p = length(xc[1, ])

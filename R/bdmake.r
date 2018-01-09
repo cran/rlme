@@ -1,6 +1,4 @@
-bdmake <-
-function (mat1, mat2) 
-{
+bdmake <- function(mat1, mat2) {
     r1 = length(mat1[, 1])
     r2 = length(mat2[, 1])
     r3 = r1 + r2

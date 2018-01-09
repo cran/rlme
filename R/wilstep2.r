@@ -1,7 +1,5 @@
-wilstep2 <-
-function (I, sec, mat, init = F, y, x, sigmaa2 = 1, sigmae2 = 1, 
-    thetaold = c(0), eps = 1e-04, iflag2 = 0, rprpair = "hl-disp") 
-{
+wilstep2 <- function(I, sec, mat, init = F, y, x, sigmaa2 = 1, sigmae2 = 1, 
+    thetaold = c(0), eps = 1e-04, iflag2 = 0, rprpair = "hl-disp") {
     location = scale = 2
     if (rprpair == "med-mad") {
         location = scale = 1

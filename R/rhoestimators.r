@@ -1,6 +1,40 @@
-beta_var <-
-function (x, school, tauhat, v1, v2, v3, section, mat) 
-{
+#' Estimate fixed-effect variance for Joint Rank Method (JR) in three-level
+#' nested design.
+#' 
+#' Fixed effect variance estimation for Joint Rank Method (JR). It assumes
+#' Compound Symmetric (CS) structure of error terms. For k-level design, there
+#' are k-1 intra/inter-class parameters to place in a correlation matrix of
+#' errors.
+#' 
+#' Correlation coefficients are obtained using Moment Estimates. See Klole et.
+#' al (2009), Bilgic (2012) and HM (2012) 
+#' 
+#' @param x Data frame of covariates.
+#' @param school A vector of cluster. 
+#' @param tauhat This is obtained from Rank-based fitting. 
+#' \code{tauhat} here~~
+#' @param v1 This is 1, main diagonal element for correlation matrix of
+#' observations. Correlation of an observation with itself is 1. 
+#' @param v2 Intra-cluster correlation coefficient. 
+#' @param v3 Intra-subcluster correlation coefficient. 
+#' @param section A vector of subclusters, nx1. 
+#' @param mat A matrix of numbers of observations in subclusters.  Dimension is
+#' Ixmax(number ofsubclusters). Each row indicates one cluster.  
+#' @return \item{var}{ The variance of fixed estimated. }
+#' @author Yusuf Bilgic
+#' @references Y. K. Bilgic. Rank-based estimation and prediction for mixed
+#' effects models in nested designs. 2012. URL
+#' http://scholarworks.wmich.edu/dissertations/40. Dissertation.
+#' 
+#' J. Kloke, J. W. McKean and M. Rashid. Rank-based estimation and associated
+#' inferences for linear models with cluster correlated errors. Journal of the
+#' American Statistical Association, 104(485):384-390, 2009.
+#' 
+#' T. P. Hettmansperger and J. W. McKean. Robust Nonparametric Statistical
+#' Methods. Chapman Hall, 2012. 
+#' 
+#' @export
+beta_var <- function(x, school, tauhat, v1, v2, v3, section, mat) {
     x <- as.matrix(x)
     ublock <- unique(school)
     I <- length(ublock)
@@ -17,9 +51,7 @@ function (x, school, tauhat, v1, v2, v3, section, mat)
     list(var = V)
 }
 
-Bmat_sch <-
-function (v1, v2, v3, section) 
-{
+Bmat_sch <- function(v1, v2, v3, section) {
     vblock <- unique(section)
     m <- length(vblock)
     N <- length(section)
@@ -40,11 +72,7 @@ function (v1, v2, v3, section)
     B
 }
 
-file <-
-"rhoestimators.r"
-interc_se <-
-function (x, ehat, taus, sec, mat) 
-{
+interc_se <- function(x, ehat, taus, sec, mat) {
     #rho1 <- rhosect(sign(ehat), school, section)
     
     #c1 <- sum(sum((apply(rho1$rho2, 1, sum, na.rm = T)/apply(rho1$npair, 
@@ -69,9 +97,8 @@ function (x, ehat, taus, sec, mat)
         c1 + 2 * sum(rho2$npair) * c2)
     list(var_alpha = var_alpha)
 }
-jrfit2 <-
-function (x, y, block) 
-{
+
+jrfit2 <- function(x, y, block) {
     x <- as.matrix(x)
     p <- ncol(x)
     fit <- rfit(y ~ x, symmetric = FALSE)
@@ -109,9 +136,8 @@ function (x, y, block)
     class(res) <- list("jrfit")
     res
 }
-mat_vec <-
-function (school, section) 
-{
+
+mat_vec <- function(school, section) {
     ublock <- unique(school)
     I <- length(ublock)
     mat <- matrix(0, nrow = I, ncol = max(as.numeric(section)))
@@ -127,9 +153,8 @@ function (school, section)
     }
     return(mat)
 }
-pairup1 <-
-function (x, type = "less") 
-{
+
+pairup1 <- function(x, type = "less") {
     x = as.matrix(x)
     n = dim(x)[1]
     i = rep(1:n, rep(n, n))
@@ -145,9 +170,8 @@ function (x, type = "less")
     n = dim(ans)[1]
     list(ans = ans, n = n)
 }
-pairup2 <-
-function (x, y) 
-{
+
+pairup2 <- function(x, y) {
     x = as.matrix(x)
     y = as.matrix(y)
     n1 = dim(x)[1]
@@ -158,9 +182,22 @@ function (x, y)
     list(ans = ans, n = n1 * n2)
 }
 
-rhosch <-
-function (ahat, school, section) 
-{
+
+#' Cluster Correlation Coefficient Estimate
+#' 
+#' Moment estimate version of correlation coefficient in a cluster in a
+#' three-level nested design.
+#' 
+#' 
+#' @param ahat A vector of scores. Wilcoxon scores are used in the package.
+#' @param school A vector of clusters.
+#' @param section A vector of subclusters.
+#' @references Y. K. Bilgic. Rank-based estimation and prediction for mixed
+#' effects models in nested designs. 2012. URL
+#' http://scholarworks.wmich.edu/dissertations/40. Dissertation.
+#' 
+#' @export 
+rhosch <- function(ahat, school, section) {
     ublock <- unique(school)
     I <- length(ublock)
     nvec <- vector(I, mode = "numeric")
@@ -220,9 +257,22 @@ function (ahat, school, section)
         nvec = nvec, npair = npair)
 }
 
-rhosect <-
-function (ahat, school, section) 
-{
+
+
+#' Subcluster Correlation Coefficient Estimate
+#' 
+#' Moment estimate version of correlation coefficient in a subcluster in a
+#' three-level nested design.
+#' 
+#' @param ahat A vector of scores. Wilcoxon scores are used in the package.
+#' @param school A vector of clusters. 
+#' @param section A vector of subclusters.
+#' @references Y. K. Bilgic. Rank-based estimation and prediction for mixed
+#' effects models in nested designs. 2012. URL
+#' http://scholarworks.wmich.edu/dissertations/40. Dissertation.
+#' 
+#' @export
+rhosect <- function(ahat, school, section) {
     ublock <- unique(school)
     I <- length(ublock)
     nvec <- matrix(0, nrow = I, ncol = max(as.numeric(section)))
@@ -258,9 +308,8 @@ function (ahat, school, section)
     list(rho1 = rho1_vec, rho2 = rho2_vec, rho3 = rho3_vec, rho4 = rho4_vec, 
         mat = nvec, npair = choose(nvec, 2))
 }
-sch_vec <-
-function (school, section) 
-{
+
+sch_vec <- function(school, section) {
     ublock <- unique(school)
     I <- length(ublock)
     vvec <- as.vector(sec_vec(school, section))
@@ -279,17 +328,15 @@ function (school, section)
     coll = coll[-1]
     return(coll)
 }
-scorewil <-
-function (ehat) 
-{
+
+scorewil <- function(ehat) {
     N = length(ehat)
     u = rank(ehat, ties.method = c("random"))/(N + 1)
     scorewil = sqrt(12) * (u - 0.5)
     list(scorewil = scorewil)
 }
-sec_sch_vec <-
-function (y, school1, section1) 
-{
+
+sec_sch_vec <- function(y, school1, section1) {
     one = 1 + 0 * y
     schsize = aggregate(one, by = list(y), FUN = sum)[, 2]
     school = factor(rep(1:length(schsize), schsize))
@@ -315,9 +362,7 @@ function (y, school1, section1)
     return(coll)
 }
 
-sec_vec <-
-function (school, section) 
-{
+sec_vec <- function(school, section) {
     ublock <- unique(school)
     I <- length(ublock)
     vvec <- matrix(0, nrow = I)
@@ -329,9 +374,20 @@ function (school, section)
     return(vvec)
 }
 
-wilonestep <-
-function (y, x) 
-{
+
+#' Wilcoxon estimate for independent linear models
+#' 
+#' This function gets weighted rank based fittings.
+#' 
+#' 
+#' @param y Response vector of nx1.
+#' @param x Design matrix, pxn, without intercept.
+#' @references J. T. Terpstra and J. W. McKean. Rank-based analysis of linear
+#' models using R. Journal of Statistical Software, 14(7) 1 -- 26, 7 2005. ISSN
+#' 1548-7660. URL http://www.jstatsoft.org/v14/i07.
+#' 
+#' @export
+wilonestep <- function(y, x) {
     n = length(y)
     fitw = wwest(x, y, print.tbl = F)
     theta = fitw$tmp1$coef

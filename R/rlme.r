@@ -1,8 +1,18 @@
-location <- 2
-
-plot.rlme <-
-function (x, ...) 
-{
+#' Plot rlme Fit
+#' 
+#' Generates Normal Q-Q plot of residuals from rlme fit
+#' 
+#' 
+#' @param x A list of class rlme. Store as fit.rlme.
+#' @param \dots not used
+#' @examples
+#' 
+#' data(schools)
+#' rlme.fit = rlme(y ~ 1 + sex + age + (1 | region) + (1 | region:school), schools, method="gr")
+#' plot(rlme.fit)
+#'
+#' @export
+plot.rlme <- function(x, ...) {
     if (x$method == "GR") {
         getgrstplot(x)
     }
@@ -16,17 +26,100 @@ function (x, ...)
     invisible()
 }
 
-rlme <-
-function (f, data, method = "gr", print = FALSE, na.omit = TRUE, 
-    weight = "wil", rprpair = "hl-disp", verbose=FALSE) 
-{
+
+
+#' Rank-based Estimates for Mixed-Effects Nested Models
+#' 
+#' This function estimates fixed effects and predicts random effects in two-
+#' and three-level random effects nested models using three rank-based fittings
+#' (GR, GEER, JR) via the prediction method algorithm RPP.
+#' 
+#' The iterative methods GR and GEER can be quite slow for large datasets; try
+#' JR for faster analysis. If you want to use the GR method, try using
+#' rprpair='med-mad'. This method avoids building a NxN covariance matrix which
+#' can quickly become unwieldly with large data.
+#' 
+#' 
+#' @param f An object of class formula describing the mixed effects model. The
+#' syntax is same as in the lme4 package. Example: y ~ 1 + sex + age + (1 |
+#' region) + (1 | region:school) - sex and age are the fixed effects, region
+#' and school are the nested random effects, school is nested within region.
+#' @param data The dataframe to analyze. Data should be cleaned prior to
+#' analysis: cluster and subcluster columns are expected to be integers and in
+#' order (e.g. all clusters and subclusters )
+#' @param method string indicating the method to use (one of "gr", "jr",
+#' "reml", and "geer"). defaults to "gr".
+#' @param print Whether or not to print a summary of results. Defaults to
+#' false.
+#' @param na.omit Whether or not to omit rows containing NA values. Defaults to
+#' true.
+#' @param weight When weight="hbr", it uses hbr weights in GEE weights. By
+#' default, ="wil", it uses Wilcoxon weights. See the theory in the references.
+#' @param rprpair By default, it uses "hl-disp" in the random prediction
+#' procedure (RPP). Also, "med-mad" would be an alternative.
+#' @param verbose Boolean indicating whether to print out diagnostic messages.
+#' 
+#' @return The function returns a list of class "rlme". Use summary.rlme to see
+#' a summary of the fit.
+#' 
+#'   \item{formula}{ The model formula. }
+#'   \item{method}{ The method used. }
+#'   \item{fixed.effects}{ Estimate of fixed effects. }
+#'   \item{random.effects}{Estimate of random effects. }
+#'   \item{standard.residual}{ Residuals. }
+#'   \item{intra.class.correlations}{ Intra/inter-class correlationa estimates obtained from RPP. }
+#'   \item{t.value}{ t-values. }
+#'   \item{p.value}{ p-values. }
+#'   \item{location}{ Location.  }
+#'   \item{scale}{ Scale.  }
+#'   \item{y}{ The response variable y.  }
+#'   \item{num.obs}{ Number of observations in provided dataset.}
+#'   \item{num.clusters}{ The number of clusters. }
+#'   \item{num.subclusters}{ The number of subclusters. }
+#'   \item{effect.err}{ Effect from error. }
+#'   \item{effect.cluster}{ Effect from cluster. }
+#'   \item{effect.subcluster}{Effect from subcluster. }
+#'   \item{var.b}{ Variances of fixed effects estimate (Beta estimates). }
+#'   \item{xstar}{ Weighted design matrix with error covariance matrix. }
+#'   \item{ystar}{ Weighted response vector with its covariance matrix.}
+#'   \item{ehat}{ The raw residual.  }
+#'   \item{ehats}{ The raw residual after weighted step. Scaled residual. }
+#'   
+#' @author Yusuf Bilgic \email{yekabe@@hotmail.com} and Herb Susmann \email{hps1@@geneseo.edu}
+#' 
+#' @seealso summary.rlme, plot.rlme, compare.fits
+#' 
+#' @references Y. K. Bilgic. Rank-based estimation and prediction for mixed
+#' effects models in nested designs. 2012. URL
+#' http://scholarworks.wmich.edu/dissertations/40. Dissertation.
+#' 
+#' T. P. Hettmansperger and J. W. McKean. Robust Nonparametric Statistical
+#' Methods. Chapman Hall, 2012.
+#' @keywords models
+#' 
+#' @examples
+#' 
+#' data(schools)
+#' 
+#' rlme.fit = rlme(y ~ 1 + sex + age + (1 | region) + (1 | region:school), schools, method="gr")
+#' summary(rlme.fit)
+#' 
+#' # Try method="geer", "reml", "ml" and "jr" along with 
+#' # rprpair="hl-disp" (not robust), and "med-mad" (robust),
+#' # weight="hbr" is for the gee method.
+#' 
+#' @importFrom utils tail
+#' @importFrom stringr str_extract_all
+#' @export
+rlme <- function(f, data, method = "gr", print = FALSE, na.omit = TRUE,  weight = "wil", rprpair = "hl-disp", verbose=FALSE)  {
+    location = 2
     method = tolower(method)
     fit = list(formula = f, location = location, scale = scale)
     if (na.omit == TRUE) {
         data = na.omit(data)
     }
     response_name = as.character(as.formula(f)[[2]])
-    random_terms = str_extract_all(as.character(f)[[3]], "\\([0-9 a-zA-Z.:|]+)")
+    random_terms = str_extract_all(as.character(f)[[3]], "\\(([0-9 a-zA-Z.:|]+)\\)")
     random_terms = lapply(random_terms[[1]], function(str) substr(str, 
         2, nchar(str) - 1))
     covariate_names = setdiff(attributes(terms(f))$term.labels, 
@@ -200,7 +293,7 @@ function (f, data, method = "gr", print = FALSE, na.omit = TRUE,
         fit$p.value = pvalue
     }
     else if (method == "geer") {
-        tol = tol = 1.1e-25
+        tol = 1.1e-25
         if (levels == 3) {
             GEER = GEER_est(x, y, I, sec, mat, data[[school_name]], 
                 data[[section_name]], weight = weight, rprpair = rprpair, verbose=verbose)
@@ -245,12 +338,18 @@ function (f, data, method = "gr", print = FALSE, na.omit = TRUE,
     }
     return(fit)
 }
-scale <-
-2
 
-summary.rlme <-
-function (object, ...) 
-{
+#' rlme Summary
+#' 
+#' Summarizes a model fit from the rmle function
+#' 
+#' 
+#' @param object A list of class rlme
+#' @param \dots not used
+#' @author Herb Susmann \email{hps1@@geneseo.edu}
+#' @seealso \code{\link{rlme}} \code{\link{plot.rlme}}
+#' @export
+summary.rlme <- function(object, ...) {
     fit = object
     cat("Linear mixed model fit by ", fit$method, "\n")
     cat("Formula: ", deparse(fit$formula), "\n")
@@ -296,5 +395,3 @@ function (object, ...)
       print(fit$var.b)
     }
 }
-tol <-
-1e-23

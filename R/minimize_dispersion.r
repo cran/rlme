@@ -1,3 +1,29 @@
+#' Minimize Dispersion Function
+#' 
+#' Uses optim to find regression estimates which minimize dispersion function
+#' on X and Y input matrices
+#' 
+#' 
+#' @param X Input matrix
+#' @param Y Response vector
+#' @param method Method optim should use - one of "Nelder-Mead", "BFGS", "CG",
+#' "L-BFGS-B", "SANN", or "Brent".
+#' @param init.guess How to calculate the first regression estimate. Defaults
+#' to using quantile regression.
+#' @param verbose Whether to print out verbose messages.
+#' @param se Whether or not to calculate standard errors of regression
+#' estimates.
+#' 
+#' @return
+#'   \item{theta }{Regression parameter estimates}
+#'   \item{ehat}{Regression residuals}
+#'   
+#' @author Herb Susmann
+#' 
+#' @importFrom quantreg rq
+#' 
+#' @export
+#' 
 minimize_dispersion = function(X, Y, method='BFGS', init.guess = 'quantreg', verbose=FALSE, se = TRUE) {
   #for large data, use method='L-BFGS-B'
   # install MASS and quantreg

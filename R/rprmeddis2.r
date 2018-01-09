@@ -1,6 +1,4 @@
-rprmeddis2 <-
-function (I, sec, mat, ehat, location, scale, rprpair = "") 
-{
+rprmeddis2 <- function(I, sec, mat, ehat, location, scale, rprpair = "") {
     rprpair = tolower(rprpair)
     if (rprpair == "hl-disp") {
         location = scale = 2

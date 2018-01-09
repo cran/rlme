@@ -1,6 +1,4 @@
-sigymake <-
-  function (I, sec, mat, siga2, sigw2, sige2) 
-  {
+sigymake <- function (I, sec, mat, siga2, sigw2, sige2) {
     students.per.school = apply(mat, 1, sum)
     n = sum(students.per.school)
     
